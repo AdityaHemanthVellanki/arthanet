@@ -1,39 +1,59 @@
-/* Import Tailwind directives - these will be processed by PostCSS */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Custom base styles */
 @layer base {
   :root {
-    /* Light theme */
-    --foreground-rgb: 15, 23, 42;      /* slate-900 - Very dark gray for text */
-    --background-rgb: 255, 255, 255;    /* Pure white background */
-    --primary-rgb: 79, 70, 229;        /* indigo-600 */
-    --primary-foreground-rgb: 255, 255, 255;
-    --muted-foreground-rgb: 71, 85, 105; /* slate-600 - Darker gray for better contrast */
-    --border-rgb: 226, 232, 240;        /* slate-200 */
-    --card-rgb: 255, 255, 255;          /* White cards */
-    --card-foreground-rgb: 15, 23, 42;  /* slate-900 */
-    --neon-blue: #00f0ff;
-    --accent-purple: #8b5cf6;
-    --accent-blue: #3b82f6;
-    --accent-cyan: #06b6d4;
-    --text-primary: #1f2937;
-  }
-
-
-  .dark {
-    /* Dark theme */
-    --foreground-rgb: 241, 245, 249;    /* slate-100 - Very light gray for text */
-    --background-rgb: 2, 6, 23;          /* slate-950 - Very dark blue-black */
-    --primary-rgb: 99, 102, 241;        /* indigo-500 */
-    --primary-foreground-rgb: 255, 255, 255;
-    --muted-foreground-rgb: 148, 163, 184; /* slate-400 - Lighter gray for better contrast */
-    --border-rgb: 30, 41, 59;            /* slate-800 */
-    --card-rgb: 15, 23, 42;              /* slate-900 */
-    --card-foreground-rgb: 248, 250, 252; /* slate-50 */
-    --text-primary: #f3f4f6;
+    /* Dark theme only */
+    --background: #0A0A0F;
+    --foreground: #F8FAFC;
+    --muted: #1E1E2E;
+    --muted-foreground: #A1A1AA;
+    --card: #0F0F17;
+    --card-foreground: #F8FAFC;
+    --popover: #0F0F17;
+    --popover-foreground: #F8FAFC;
+    --primary: #4A90E2;
+    --primary-foreground: #010104;
+    --secondary: #2BC6A3;
+    --secondary-foreground: #010104;
+    --accent: #9B51E0;
+    --accent-foreground: #F8FAFC;
+    --destructive: #EF4444;
+    --destructive-foreground: #F8FAFC;
+    --border: #2A2A3A;
+    --input: #2A2A3A;
+    --ring: #4A90E2;
+    --radius: 0.5rem;
+    
+    /* RGB Values for animation effects */
+    --background-rgb: 10, 10, 15;
+    --foreground-rgb: 248, 250, 252;
+    --muted-rgb: 30, 30, 46;
+    --muted-foreground-rgb: 161, 161, 170;
+    --primary-rgb: 74, 144, 226;
+    --secondary-rgb: 43, 198, 163;
+    --accent-rgb: 155, 81, 224;
+    --border-rgb: 42, 42, 58;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(90deg, #4A90E2 0%, #9B51E0 100%);
+    --gradient-accent: linear-gradient(90deg, #2BC6A3 0%, #4A90E2 100%);
+    --gradient-secondary: linear-gradient(90deg, #9B51E0 0%, #D047D1 100%);
+    --gradient-animated: linear-gradient(90deg, #4A90E2 0%, #9B51E0 50%, #2BC6A3 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(74, 144, 226, 0.15);
+    --shadow-accent-glow: 0 0 20px rgba(155, 81, 224, 0.15);
+    
+    /* Animation */
+    --premium-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
+    --transition-fast: 200ms var(--premium-easing);
+    --transition-medium: 400ms var(--premium-easing);
+    --transition-slow: 800ms var(--premium-easing);
   }
 
   * {
@@ -41,13 +61,31 @@
   }
 
   body {
-    background-color: rgb(var(--background-rgb));
-    color: rgb(var(--foreground-rgb));
+    background-color: var(--background);
+    color: var(--foreground);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
     line-height: 1.5;
     transition: background-color 0.2s, color 0.2s;
+  }
+  
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--background); 
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted); 
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--primary-rgb), 0.5);
   }
 }
 

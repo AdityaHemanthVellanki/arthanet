@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next"
 import { Inter, Space_Grotesk } from 'next/font/google'
 import "./globals.css"
-import { ThemeProvider } from '@/components/theme-provider'
-import { Header } from '@/components/header'
-import { cn } from "@/lib/utils"
+import { ThemeProvider } from '@/components/theme-provider';
+import { Header } from '@/components/header';
+import { cn } from "@/lib/utils";
+import { Providers } from '@/components/providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,14 +58,14 @@ export default function RootLayout({
         'min-h-screen bg-background text-foreground antialiased',
         'transition-colors duration-200' // Smooth theme transitions
       )}>
-        <ThemeProvider>
+        <Providers>
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">
               {children}
             </main>
           </div>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
