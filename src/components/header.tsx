@@ -33,43 +33,31 @@ export function Header() {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
-        <motion.nav
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="hidden items-center space-x-8 md:flex"
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'relative text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
-                isHome && 'group'
-              )}
-            >
-              {isHome && (
-                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full" />
-              )}
-              {item.name}
-            </Link>
-          ))}
-        </motion.nav>
-
-        {/* Connect Wallet Button */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <ConnectButton
-            accountStatus="address"
-            showBalance={false}
-            chainStatus="none"
-            label="Connect Wallet"
-          />
-        </motion.div>
+        {/* Desktop Navigation - Centered */}
+        <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 transform md:block">
+          <motion.nav
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="flex items-center space-x-8"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'relative text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
+                  isHome && 'group'
+                )}
+              >
+                {item.name}
+                {isHome && (
+                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full" />
+                )}
+              </Link>
+            ))}
+          </motion.nav>
+        </div>
       </div>
     </header>
   );
