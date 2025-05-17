@@ -176,13 +176,13 @@ const Toast = ({ message, onClose, type = "success" }: { message: string; onClos
         <Check className="h-4 w-4" />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-semibold text-foreground">{message}</p>
+        <p className="text-sm font-semibold text-foreground/90">{message}</p>
       </div>
       <button
         onClick={onClose}
         className={cn(
           "p-1.5 rounded-full hover:bg-background/50 focus:outline-none transition-colors",
-          "text-foreground/70 hover:text-foreground"
+          "text-foreground/90 hover:text-foreground"
         )}
       >
         <span className="sr-only">Close</span>
@@ -489,7 +489,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.4 }}
-              className="text-xl text-foreground/80 mb-8 max-w-2xl font-medium"
+              className="text-xl text-foreground/90 mb-8 max-w-2xl font-medium"
               style={{ lineHeight: 1.6 }}
             >
               <span className="text-foreground/90 font-medium">ArthaNet</span> is the first AI-powered credit scoring platform for your crypto assets. Join our waitlist for early access to the future of decentralized finance.
@@ -691,7 +691,7 @@ export default function Hero() {
                           </motion.span>
                         </motion.span>
                         <motion.div
-                          className="flex items-center gap-2 font-medium text-muted-foreground mt-2"
+                          className="flex items-center gap-2 font-medium text-foreground/90 mt-2"
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 1.2, duration: 0.5 }}
@@ -812,13 +812,13 @@ export default function Hero() {
       
       {/* Enhanced scroll indicator with smoother animation */}
       <motion.div 
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-muted-foreground text-sm"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-foreground/90 text-sm"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.8, ease: PREMIUM_EASING }}
       >
         <motion.span 
-          className="mb-2 tracking-wide font-medium text-foreground/90"
+          className="mb-2 tracking-wide font-medium text-foreground"
           animate={{ opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
         >

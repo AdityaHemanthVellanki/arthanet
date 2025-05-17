@@ -24,7 +24,7 @@ export default function Footer() {
               </div>
               <span className="text-lg font-bold text-gradient">ArthaNet</span>
             </Link>
-            <p className="text-[var(--text-secondary)] mt-4 max-w-md">
+            <p className="text-foreground/90 mt-4 max-w-md">
               AI-powered decentralized credit scoring and DeFi automation platform built on Ethereum.
               Transforming the way financial trust is established in Web3.
             </p>
@@ -39,7 +39,7 @@ export default function Footer() {
                 <a 
                   key={index}
                   href="#" 
-                  className="text-[var(--text-secondary)] hover:text-white transition-colors"
+                  className="text-foreground/90 hover:text-white transition-colors"
                   aria-label={social.name}
                 >
                   <div className="bg-[var(--primary)] hover:bg-[var(--accent-blue)] p-2.5 rounded-full transition-colors">
@@ -63,7 +63,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {['How It Works', 'Features', 'Security', 'Roadmap'].map((item, index) => (
                 <li key={index}>
-                  <Link href="#" className="text-[var(--text-secondary)] hover:text-white transition-colors">
+                  <Link href="#" className="text-foreground/90 hover:text-white transition-colors">
                     {item}
                   </Link>
                 </li>
@@ -77,7 +77,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {['Documentation', 'Whitepaper', 'API', 'Contact Us'].map((item, index) => (
                 <li key={index}>
-                  <Link href="#" className="text-[var(--text-secondary)] hover:text-white transition-colors">
+                  <Link href="#" className="text-foreground/90 hover:text-white transition-colors">
                     {item}
                   </Link>
                 </li>
@@ -94,10 +94,10 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-[var(--accent-blue)] border-opacity-20 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-foreground/80">
             &copy; {currentYear} ArthaNet. All rights reserved.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-[var(--text-muted)]">
+          <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-foreground/80">
             <Link href="#" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>

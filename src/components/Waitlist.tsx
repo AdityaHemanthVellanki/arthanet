@@ -47,7 +47,7 @@ export default function Waitlist() {
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   Join the <span className="text-gradient">ArthaNet</span> Waitlist
                 </h2>
-                <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
+                <p className="text-foreground/90 max-w-2xl mx-auto">
                   Be among the first to access our AI-powered decentralized credit scoring platform and shape the future of DeFi.
                 </p>
               </div>
@@ -100,19 +100,19 @@ export default function Waitlist() {
                       </svg>
                     </div>
                     <h3 className="text-xl font-bold mb-2">Thank you for joining!</h3>
-                    <p className="text-[var(--text-secondary)]">
+                    <p className="text-foreground/90">
                       We've added you to our waitlist. We'll notify you when ArthaNet launches.
                     </p>
                     <button 
                       onClick={() => setSubmitted(false)}
-                      className="mt-4 text-[var(--accent-cyan)] hover:text-[var(--accent-blue)] transition-colors"
+                      className="mt-4 text-primary hover:text-primary/80 transition-colors"
                     >
                       Add another email
                     </button>
                   </motion.div>
                 )}
                 
-                <p className="text-sm text-[var(--text-muted)] text-center mt-4">
+                <p className="text-sm text-foreground/80 text-center mt-4">
                   By joining the waitlist, you agree to receive updates about ArthaNet. We respect your privacy and will never share your information.
                 </p>
               </div>

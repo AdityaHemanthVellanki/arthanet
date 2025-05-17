@@ -72,9 +72,9 @@ export default function Features() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Built for the <span className="text-gradient">DeFi Ecosystem</span>
+            <span className="text-foreground">Built for the</span> <span className="text-gradient">DeFi Ecosystem</span>
           </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/90 max-w-2xl mx-auto">
             ArthaNet combines on-chain data and AI to create powerful financial tools.
           </p>
         </motion.div>
@@ -83,18 +83,18 @@ export default function Features() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="bg-[var(--primary-dark)] bg-opacity-60 p-6 rounded-xl backdrop-blur-sm border border-[var(--accent-blue)] border-opacity-20 hover:border-opacity-40 transition-all group"
+              className="bg-card bg-opacity-60 p-6 rounded-xl backdrop-blur-sm border border-[var(--accent-blue)] border-opacity-20 hover:border-opacity-40 transition-all group"
               variants={cardVariants}
               initial="offscreen"
               whileInView="onscreen"
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className="bg-gradient-to-br from-[var(--accent-purple)] to-[var(--accent-blue)] p-3 rounded-lg w-14 h-14 flex items-center justify-center mb-4 text-white group-hover:shadow-md group-hover:shadow-[var(--neon-blue)] transition-all">
+              <div className="bg-gradient-to-br from-accent to-primary p-3 rounded-lg w-14 h-14 flex items-center justify-center mb-4 text-white group-hover:shadow-md group-hover:shadow-[var(--neon-blue)] transition-all">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-              <p className="text-[var(--text-secondary)]">{feature.description}</p>
+              <p className="text-foreground/90">{feature.description}</p>
             </motion.div>
           ))}
         </div>

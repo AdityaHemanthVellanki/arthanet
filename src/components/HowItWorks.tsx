@@ -51,9 +51,9 @@ export default function HowItWorks() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            How <span className="text-gradient">ArthaNet</span> Works
+            <span className="text-foreground">How</span> <span className="text-gradient">ArthaNet</span> <span className="text-foreground">Works</span>
           </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/90 max-w-2xl mx-auto">
             Simple, secure, and seamless credit scoring for Web3 users.
           </p>
         </motion.div>
@@ -73,19 +73,19 @@ export default function HowItWorks() {
                 <div className="hidden md:block absolute top-16 right-0 w-full h-0.5 bg-gradient-to-r from-[var(--accent-blue)] to-transparent z-0"></div>
               )}
               
-              <div className="bg-[var(--primary-dark)] bg-opacity-60 p-8 rounded-xl backdrop-blur-sm border border-[var(--accent-blue)] border-opacity-20 hover:border-opacity-40 transition-all relative z-10">
+              <div className="bg-card bg-opacity-60 p-8 rounded-xl backdrop-blur-sm border border-[var(--accent-blue)] border-opacity-20 hover:border-opacity-40 transition-all relative z-10">
                 {/* Step number */}
-                <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-gradient-to-r from-[var(--accent-purple)] to-[var(--accent-blue)] flex items-center justify-center text-white font-mono font-bold">
+                <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-gradient-to-r from-[var(--accent-purple)] to-[var(--accent-blue)] flex items-center justify-center text-foreground font-mono font-bold">
                   {step.number}
                 </div>
                 
                 {/* Icon */}
-                <div className="bg-[var(--primary)] p-4 rounded-lg w-16 h-16 flex items-center justify-center mb-6 text-[var(--accent-cyan)]">
+                <div className="bg-[var(--primary)] p-4 rounded-lg w-16 h-16 flex items-center justify-center mb-6 text-primary/90">
                   {step.icon}
                 </div>
                 
                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                <p className="text-[var(--text-secondary)]">{step.description}</p>
+                <p className="text-foreground/90">{step.description}</p>
               </div>
             </motion.div>
           ))}

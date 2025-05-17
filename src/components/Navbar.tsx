@@ -48,13 +48,13 @@ export default function Navbar() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white hover:text-[var(--accent-cyan)] transition-colors">
+            <Link href="/" className="text-foreground hover:text-[var(--accent-cyan)] transition-colors">
               Home
             </Link>
-            <Link href="#how-it-works" className="text-white hover:text-[var(--accent-cyan)] transition-colors">
+            <Link href="#how-it-works" className="text-foreground hover:text-[var(--accent-cyan)] transition-colors">
               How It Works
             </Link>
-            <Link href="#docs" className="text-white hover:text-[var(--accent-cyan)] transition-colors">
+            <Link href="#docs" className="text-foreground hover:text-[var(--accent-cyan)] transition-colors">
               Docs
             </Link>
             <motion.div
@@ -71,7 +71,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               type="button"
-              className="text-white p-2"
+              className="text-foreground p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -99,21 +99,21 @@ export default function Navbar() {
           <div className="px-4 pt-2 pb-4 space-y-4">
             <Link 
               href="/"
-              className="block py-2 text-white hover:text-[var(--accent-cyan)]"
+              className="block py-2 text-foreground hover:text-[var(--accent-cyan)]"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               href="#how-it-works"
-              className="block py-2 text-white hover:text-[var(--accent-cyan)]"
+              className="block py-2 text-foreground hover:text-[var(--accent-cyan)]"
               onClick={() => setMobileMenuOpen(false)}
             >
               How It Works
             </Link>
             <Link 
               href="#docs"
-              className="block py-2 text-white hover:text-[var(--accent-cyan)]"
+              className="block py-2 text-foreground hover:text-[var(--accent-cyan)]"
               onClick={() => setMobileMenuOpen(false)}
             >
               Docs

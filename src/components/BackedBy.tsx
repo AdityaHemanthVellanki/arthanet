@@ -19,7 +19,7 @@ export default function BackedBy() {
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Backed By <span className="text-gradient">Ecosystem Leaders</span>
           </h2>
-          <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
+          <p className="text-foreground/90 max-w-2xl mx-auto">
             Built by ecosystem experts for the decentralized future.
           </p>
         </motion.div>
@@ -34,8 +34,8 @@ export default function BackedBy() {
           {/* Partner logos - These would normally be actual partner logos */}
           {[...Array(3)].map((_, i) => (
             <div key={i} className="flex justify-center">
-              <div className="bg-[var(--primary-dark)] bg-opacity-60 border border-[var(--accent-blue)] border-opacity-20 rounded-lg p-4 w-full max-w-[180px] h-24 flex items-center justify-center">
-                <div className="text-[var(--text-secondary)] text-sm text-center font-medium">
+              <div className="bg-card bg-opacity-60 border border-[var(--accent-blue)] border-opacity-20 rounded-lg p-4 w-full max-w-[180px] h-24 flex items-center justify-center">
+                <div className="text-foreground/90 text-sm text-center font-medium">
                   {i === 0 ? "Built by Superteam contributor" : 
                    i === 1 ? "Backed by community" : 
                    "Ecosystem partner"}

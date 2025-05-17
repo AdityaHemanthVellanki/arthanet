@@ -38,6 +38,11 @@
     --accent-rgb: 155, 81, 224;
     --tertiary-rgb: 255, 87, 131;
     --border-rgb: 45, 51, 68;
+
+    /* Additional text colors for consistent contrast */
+    --text-primary: #F9FAFB;
+    --text-secondary: #E5E7EB;
+    --text-muted: #D1D5DB;
     
     /* Enhanced Apple-inspired gradients */
     --gradient-primary: linear-gradient(135deg, #4A90E2 0%, #9B51E0 100%);
@@ -260,7 +265,9 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, var(--accent-purple), var(--accent-blue), var(--accent-cyan));
+  background-image: linear-gradient(to right, #9B51E0, #4A90E2, #2BC6A3);
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
+  font-weight: 700;
 }
 
 .btn-primary {
