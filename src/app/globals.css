@@ -4,56 +4,70 @@
 
 @layer base {
   :root {
-    /* Dark theme only */
-    --background: #0A0A0F;
-    --foreground: #F8FAFC;
-    --muted: #1E1E2E;
-    --muted-foreground: #A1A1AA;
-    --card: #0F0F17;
-    --card-foreground: #F8FAFC;
-    --popover: #0F0F17;
-    --popover-foreground: #F8FAFC;
-    --primary: #4A90E2;
-    --primary-foreground: #010104;
-    --secondary: #2BC6A3;
-    --secondary-foreground: #010104;
-    --accent: #9B51E0;
-    --accent-foreground: #F8FAFC;
+    /* Enhanced dark theme with Apple/Raycast inspiration */
+    --background: #050A14; /* Deeper navy background */
+    --foreground: #F9FAFB; /* Slightly crisper white */
+    --muted: #1A1F2C; /* Richer muted tone */
+    --muted-foreground: #A9B1D6; /* More vibrant muted text */
+    --card: #0A1221; /* Richer card background */
+    --card-foreground: #F9FAFB;
+    --popover: #0A1221;
+    --popover-foreground: #F9FAFB;
+    --primary: #4A90E2; /* Keeping blue */
+    --primary-foreground: #050A14;
+    --secondary: #2BC6A3; /* Keeping teal */
+    --secondary-foreground: #050A14;
+    --accent: #9B51E0; /* Keeping violet */
+    --accent-foreground: #F9FAFB;
+    --tertiary: #FF5783; /* Adding magenta accent */
+    --tertiary-foreground: #F9FAFB;
     --destructive: #EF4444;
-    --destructive-foreground: #F8FAFC;
-    --border: #2A2A3A;
-    --input: #2A2A3A;
+    --destructive-foreground: #F9FAFB;
+    --border: #2D3344; /* Richer border color */
+    --input: #212936; /* Enhanced input background */
     --ring: #4A90E2;
     --radius: 0.5rem;
     
     /* RGB Values for animation effects */
-    --background-rgb: 10, 10, 15;
-    --foreground-rgb: 248, 250, 252;
-    --muted-rgb: 30, 30, 46;
-    --muted-foreground-rgb: 161, 161, 170;
+    --background-rgb: 5, 10, 20;
+    --foreground-rgb: 249, 250, 251;
+    --muted-rgb: 26, 31, 44;
+    --muted-foreground-rgb: 169, 177, 214;
     --primary-rgb: 74, 144, 226;
     --secondary-rgb: 43, 198, 163;
     --accent-rgb: 155, 81, 224;
-    --border-rgb: 42, 42, 58;
+    --tertiary-rgb: 255, 87, 131;
+    --border-rgb: 45, 51, 68;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(90deg, #4A90E2 0%, #9B51E0 100%);
-    --gradient-accent: linear-gradient(90deg, #2BC6A3 0%, #4A90E2 100%);
-    --gradient-secondary: linear-gradient(90deg, #9B51E0 0%, #D047D1 100%);
-    --gradient-animated: linear-gradient(90deg, #4A90E2 0%, #9B51E0 50%, #2BC6A3 100%);
+    /* Enhanced Apple-inspired gradients */
+    --gradient-primary: linear-gradient(135deg, #4A90E2 0%, #9B51E0 100%);
+    --gradient-accent: linear-gradient(135deg, #2BC6A3 0%, #4A90E2 100%);
+    --gradient-secondary: linear-gradient(135deg, #9B51E0 0%, #FF5783 100%);
+    --gradient-animated: linear-gradient(135deg, #4A90E2 0%, #9B51E0 50%, #2BC6A3 100%);
     
-    /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 20px rgba(74, 144, 226, 0.15);
-    --shadow-accent-glow: 0 0 20px rgba(155, 81, 224, 0.15);
+    /* Raycast-inspired subtle glass effect */
+    --glass-background: rgba(10, 18, 33, 0.6);
+    --glass-border: rgba(74, 144, 226, 0.2);
+    --glass-glow: 0 0 30px rgba(74, 144, 226, 0.1);
     
-    /* Animation */
+    /* Enhanced shadows for Apple-like depth */
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.55);
+    --shadow-glow: 0 0 25px rgba(74, 144, 226, 0.2);
+    --shadow-accent-glow: 0 0 25px rgba(155, 81, 224, 0.2);
+    --shadow-tertiary-glow: 0 0 25px rgba(255, 87, 131, 0.2);
+    
+    /* Animation with Apple's smoothness */
     --premium-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
     --transition-fast: 200ms var(--premium-easing);
     --transition-medium: 400ms var(--premium-easing);
     --transition-slow: 800ms var(--premium-easing);
+    
+    /* Special effects */
+    --blur-sm: blur(4px);
+    --blur-md: blur(12px);
+    --blur-lg: blur(24px);
   }
 
   * {

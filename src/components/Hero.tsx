@@ -1,12 +1,36 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useReducedMotion, MotionValue } from 'framer-motion';
-import { Check, ArrowRight, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Check, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PREMIUM_EASING, fadeInUp, letterFadeIn, staggeredFadeIn, buttonHover } from '@/lib/animations';
 
-const GRADIENT_TEXT = 'bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary';
+// Animation constants
+const PREMIUM_EASING = [0.4, 0, 0.2, 1];
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
+
+const buttonHover = {
+  scale: 1.03,
+  transition: { duration: 0.2 }
+};
+
+// Generate a stable random number for consistent rendering between server/client
+const getStableRandom = (seed: number, max: number = 1, min: number = 0): number => {
+  // Simple hash function for consistent pseudo-random values
+  let hash = 0;
+  const str = `seed-${seed}`;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return (Math.abs(hash) % 1000) / 1000 * (max - min) + min;
+};
 
 // Animation to count up from a starting to ending value
 const CountUpAnimation = ({ from, to, duration = 1.5, delay = 0 }: { from: number; to: number; duration?: number; delay?: number }) => {
@@ -45,6 +69,22 @@ const CountUpAnimation = ({ from, to, duration = 1.5, delay = 0 }: { from: numbe
 const AnimatedText = ({ text, className }: { text: string; className?: string }) => {
   const shouldReduceMotion = useReducedMotion();
   
+  // Local animation variants
+  const staggeredFadeIn = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const letterFadeIn = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
+  
   return (
     <motion.span
       className={className}
@@ -53,14 +93,12 @@ const AnimatedText = ({ text, className }: { text: string; className?: string })
       animate="visible"
     >
       {shouldReduceMotion ? (
-        <motion.span variants={fadeInUp}>{text}</motion.span>
+        text
       ) : (
         text.split('').map((char, index) => (
           <motion.span
             key={`${char}-${index}`}
             variants={letterFadeIn}
-            className="inline-block"
-            style={{ originY: 0.5 }}
           >
             {char === ' ' ? '\u00A0' : char}
           </motion.span>
@@ -70,125 +108,223 @@ const AnimatedText = ({ text, className }: { text: string; className?: string })
   );
 };
 
-// Animated button with hover effects
+// Custom AnimatedButton component with premium hover effect
 const AnimatedButton = ({ 
-  type = 'button', 
-  disabled = false, 
-  className, 
-  children,
+  children, 
+  className = "", 
+  type = "button" as "button" | "submit" | "reset", 
+  disabled = false,
   onClick
 }: {
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
-  className?: string;
   children: React.ReactNode;
+  className?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
   onClick?: () => void;
 }) => {
   return (
     <motion.button
       type={type}
       disabled={disabled}
+      className={className}
+      whileHover={buttonHover}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={cn(
-        'relative overflow-hidden transition-all',
-        'group',
-        className
-      )}
-      variants={buttonHover}
-      initial="rest"
-      whileHover="hover"
-      whileTap="tap"
     >
-      {/* Gradient border effect on hover */}
-      <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-        style={{
-          background: 'linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.2), rgba(var(--accent-rgb), 0.2), transparent)',
-          backgroundSize: '200% 100%',
-          animation: 'shine 2s linear infinite',
-        }}>
-      </span>
-      
-      {/* Inner shadow on button press */}
-      <span className="absolute inset-0 opacity-0 group-active:opacity-20 bg-black transition-opacity duration-150"></span>
-      
-      {/* Button content */}
-      <span className="relative z-10 flex items-center justify-center gap-2">
-        {children}
-      </span>
+      {children}
     </motion.button>
   );
 };
 
-// Toast notification component
-const Toast = ({ message, onClose }: { message: string; onClose: () => void }) => {
+// Apple-inspired blurred glass card component
+const GlassCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  return (
+    <div className={cn(
+      "rounded-2xl backdrop-blur-md bg-background/30 border border-border/30", 
+      "shadow-xl hover:shadow-2xl transition-all duration-500",
+      "border-opacity-30 overflow-hidden",
+      className
+    )}>
+      {children}
+    </div>
+  );
+};
+
+// Enhanced toast notification component with Apple/Raycast style
+const Toast = ({ message, onClose, type = "success" }: { message: string; onClose: () => void; type?: "success" | "error" }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed top-6 right-6 z-50 p-4 pr-10 rounded-lg bg-background border border-border shadow-lg flex items-center"
+      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+      transition={{ type: "spring", damping: 25, stiffness: 300 }}
+      className={cn(
+        "fixed top-6 left-1/2 -translate-x-1/2 z-50 p-4 px-6 rounded-xl backdrop-blur-xl shadow-2xl",
+        "border border-border/20 flex items-center gap-3 max-w-md",
+        type === "success" ? "bg-primary/15" : "bg-red-500/15"
+      )}
+      style={{
+        boxShadow: type === "success" 
+          ? "0 8px 32px rgba(var(--primary-rgb), 0.2)" 
+          : "0 8px 32px rgba(239, 68, 68, 0.2)"
+      }}
     >
-      <div className="flex items-center">
-        <div className="flex-shrink-0 h-5 w-5 text-green-500">
-          <Check className="h-5 w-5" />
-        </div>
-        <div className="ml-3">
-          <p className="text-sm font-medium text-foreground">{message}</p>
-        </div>
+      <div className={cn(
+        "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
+        type === "success" ? "bg-primary/30 text-primary" : "bg-red-500/30 text-red-500"
+      )}>
+        <Check className="h-4 w-4" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-semibold text-foreground">{message}</p>
       </div>
       <button
         onClick={onClose}
-        className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground focus:outline-none"
+        className={cn(
+          "p-1.5 rounded-full hover:bg-background/50 focus:outline-none transition-colors",
+          "text-foreground/70 hover:text-foreground"
+        )}
       >
         <span className="sr-only">Close</span>
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
+      <motion.div 
+        className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-accent rounded-b-xl"
+        initial={{ width: "100%" }}
+        animate={{ width: "0%" }}
+        transition={{ duration: 5, ease: "linear" }}
+        style={{ display: type === "success" ? "block" : "none" }}
+      />
     </motion.div>
   );
 };
 
-// Generate a consistent random number based on index for server and client
-const getStableRandom = (index: number, max: number = 1, min: number = 0) => {
-  // Use a simple hash function to generate a pseudo-random number based on the index
-  let hash = 0;
-  const str = `node-${index}`;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return (Math.abs(hash) % 1000) / 1000 * (max - min) + min;
+
+
+// Floating element for background decoration
+const FloatingElement = ({ index, className = "" }: { index: number, className?: string }) => {
+  const shouldReduceMotion = useReducedMotion();
+  const size = 20 + index * 15;
+  
+  return shouldReduceMotion ? null : (
+    <motion.div
+      className={cn("absolute rounded-full bg-opacity-10", className)}
+      style={{
+        width: size,
+        height: size,
+        left: `${getStableRandom(index * 3, 80, 10)}%`,
+        top: `${getStableRandom(index * 5, 80, 10)}%`,
+        background: `radial-gradient(circle at center, rgba(var(--${index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'accent' : 'secondary'}-rgb), 0.15) 0%, transparent 70%)`,
+        boxShadow: `0 0 ${size/2}px rgba(var(--${index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'accent' : 'secondary'}-rgb), 0.1)`,
+      }}
+      animate={{
+        y: [0, getStableRandom(index * 2, 15, -15)],
+        x: [0, getStableRandom(index * 4, 15, -15)],
+        scale: [1, getStableRandom(index * 6, 1.1, 0.9)],
+      }}
+      transition={{
+        duration: getStableRandom(index * 7, 25, 15),
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: PREMIUM_EASING,
+      }}
+    />
+  );
+};
+
+// Helper for random gradients (stable across client/server)
+const getRandomValue = (seed: number, max: number = 1, min: number = 0): number => {
+  return getStableRandom(seed, max, min);
 };
 
 export default function Hero() {
+  // State management
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
   const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [isClient, setIsClient] = useState(false);
-
+  const [scrollY, setScrollY] = useState(0);
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  
+  // Handle reduced motion preferences
+  const shouldReduceMotion = useReducedMotion();
+  
+  // Set up client-side detection
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
+  // Set up scroll event listener for parallax effects
+  useEffect(() => {
+    // Parallax effect on scroll
+    const handleScroll = () => {
+      if (window && window.scrollY < window.innerHeight) {
+        setScrollY(window.scrollY);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  // Use stable random values for SSR
-  const getRandomValue = useCallback((index: number, max: number = 1, min: number = 0) => {
+  // Create stable random value generator for consistent SSR
+  const getRandomValue = (index: number, max: number = 1, min: number = 0): number => {
     return isClient ? Math.random() * (max - min) + min : getStableRandom(index, max, min);
-  }, [isClient]);
+  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
+    
+    // Validate email format
+    if (!email) {
+      setToastType('error');
+      setToastMessage('Please enter your email address.');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+      return;
+    }
+    
+    if (!email.includes('@') || !email.includes('.')) {
+      setToastType('error');
+      setToastMessage('Please enter a valid email address.');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+      return;
+    }
 
     setIsSubmitting(true);
     
     try {
+      // For demo purposes - simulate API call with a delay
       // TODO: Replace with your actual API endpoint
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Success path
+      setToastType('success');
+      setToastMessage('Successfully joined the ArthaNet waitlist! 🎉');
+      setShowToast(true);
+      
+      // Show success animation in the form area
+      setShowSuccessAnimation(true);
+      
+      // Clear the form after a brief delay to allow animation to be visible
+      setTimeout(() => {
+        setEmail('');
+        // Reset the success animation after 2 seconds
+        setTimeout(() => setShowSuccessAnimation(false), 2000);
+      }, 300);
+      
+      // Toast will auto-hide after 5 seconds (matching the progress bar animation)
+      setTimeout(() => setShowToast(false), 5000);
+      
+      // Uncomment and adapt this for real API integration
+      /*
       const response = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -197,92 +333,60 @@ export default function Hero() {
       
       if (response.ok) {
         setEmail('');
-        setToastMessage('Successfully joined the waitlist!');
+        setToastType('success');
+        setToastMessage('Successfully joined the ArthaNet waitlist! 🎉');
         setShowToast(true);
-        
-        // Hide toast after 5 seconds
-        setTimeout(() => {
-          setShowToast(false);
-        }, 5000);
+        setTimeout(() => setShowToast(false), 5000);
       } else {
-        setToastMessage('Something went wrong. Please try again.');
+        const data = await response.json();
+        setToastType('error');
+        setToastMessage(data.message || 'Something went wrong. Please try again.');
         setShowToast(true);
-        
-        // Hide toast after 5 seconds
-        setTimeout(() => {
-          setShowToast(false);
-        }, 5000);
+        setTimeout(() => setShowToast(false), 5000);
       }
+      */
+      
     } catch (error) {
       console.error('Error submitting form:', error);
+      setToastType('error');
       setToastMessage('An error occurred. Please try again.');
       setShowToast(true);
-      
-      // Hide toast after 5 seconds
-      setTimeout(() => {
-        setShowToast(false);
-      }, 5000);
+      setTimeout(() => setShowToast(false), 5000);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Define keyframes for animated gradient border and other animations
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shine {
-        0% { background-position: 200% center; }
-        100% { background-position: -200% center; }
-      }
-      
-      @keyframes breathe {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.8; }
-      }
-      
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-      }
-      
-      @keyframes gradientMove {
-        0% { background-position: 0% 0%; }
-        50% { background-position: 100% 100%; }
-        100% { background-position: 0% 0%; }
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-  
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-24 md:pt-28 pb-32 overflow-hidden" id="hero">
-      {/* Toast Notification */}
       <AnimatePresence>
         {showToast && (
           <Toast 
             message={toastMessage}
+            type={toastType}
             onClose={() => setShowToast(false)}
           />
         )}
       </AnimatePresence>
-      {/* Enhanced animated background with breathing effect */}
+
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        {/* Node network background with breathing effect */}
-        <div className="absolute inset-0 opacity-30" 
-          style={{
-            backgroundImage: `radial-gradient(circle at 30% 20%, rgba(var(--primary-rgb), 0.08) 0%, transparent 30%), 
-                              radial-gradient(circle at 70% 60%, rgba(var(--accent-rgb), 0.08) 0%, transparent 30%), 
-                              radial-gradient(circle at 50% 50%, rgba(var(--secondary-rgb), 0.05) 0%, transparent 40%)`,
-            animation: shouldReduceMotion ? 'none' : 'breathe 8s infinite ease-in-out'
-          }}>
+        <div className="absolute inset-0 opacity-50">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                radial-gradient(circle at 50% 50%, rgba(74, 144, 226, 0.15), rgba(10, 18, 33, 0) 60%),
+                radial-gradient(circle at 85% 30%, rgba(155, 81, 224, 0.1), rgba(10, 18, 33, 0) 50%),
+                radial-gradient(circle at 20% 80%, rgba(43, 198, 163, 0.1), rgba(10, 18, 33, 0) 50%)
+              `,
+            }}
+          />
         </div>
-        
-        {/* Animated gradient orbs */}
-        <motion.div 
+
+        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `radial-gradient(circle at 30% 20%, rgba(var(--primary-rgb), 0.08) 0%, transparent 30%), radial-gradient(circle at 70% 60%, rgba(var(--accent-rgb), 0.08) 0%, transparent 30%), radial-gradient(circle at 50% 50%, rgba(var(--secondary-rgb), 0.05) 0%, transparent 40%)` }}>
+        </div>
+
+        <motion.div
           className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl"
           animate={{
             opacity: [0.3, 0.6, 0.3],
@@ -292,10 +396,10 @@ export default function Hero() {
             duration: 8,
             ease: 'easeInOut',
             repeat: Infinity,
-            repeatType: 'reverse'
+            repeatType: 'reverse',
           }}
         />
-        <motion.div 
+        <motion.div
           className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl"
           animate={{
             opacity: [0.3, 0.7, 0.3],
@@ -306,10 +410,10 @@ export default function Hero() {
             ease: 'easeInOut',
             repeat: Infinity,
             repeatType: 'reverse',
-            delay: 2
+            delay: 2,
           }}
         />
-        <motion.div 
+        <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/5 to-accent/5 rounded-full blur-3xl opacity-70"
           animate={{
             opacity: [0.4, 0.7, 0.4],
@@ -318,149 +422,208 @@ export default function Hero() {
             duration: 12,
             ease: 'easeInOut',
             repeat: Infinity,
-            repeatType: 'reverse'
+            repeatType: 'reverse',
           }}
         />
       </div>
-      
-      {/* Main content container with strict dimensions */}
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Two-column layout with fixed widths and spacing */}
         <div className="flex flex-col lg:flex-row justify-between items-center max-w-7xl mx-auto py-8 lg:py-16 gap-12 lg:gap-8">
-          {/* Hero text content with staggered animations - fixed width to prevent overlap */}
           <motion.div
-            variants={staggeredFadeIn}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
             className="relative z-10 w-full lg:w-[45%] mx-auto lg:mx-0 flex-shrink-0"
           >
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-bold leading-tight mb-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.2 }}
+                className="block"
+              >
+                <span>Redefining </span>
+                <span className="inline-block relative">
+                  <span
+                    className="relative inline-block"
+                    style={{
+                      background: 'var(--gradient-primary)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundSize: '200% 200%',
+                      animation: 'gradientMove 8s ease infinite',
+                      filter: 'brightness(1.2) contrast(1.1)',
+                      textShadow: '0 1px 3px rgba(var(--primary-rgb), 0.4)'
+                    }}
+                  >
+                    On-Chain
+                  </span>
+                </span>
+              </motion.div>
 
-            {/* Letter-by-letter animated headline with Credit Score on same line */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-heading font-bold leading-tight mb-6">
-              <div>
-                <AnimatedText text="Your " />
-              </div>
-              <div className="whitespace-nowrap">
-                <AnimatedText 
-                  text="On-Chain Credit Score" 
-                  className={GRADIENT_TEXT} 
-                />
-              </div>
-            </h1>
-            
-            <motion.p 
-              variants={fadeInUp}
-              className="text-xl text-muted-foreground mb-8 max-w-2xl"
-            >
-              Unlock the power of decentralized finance with AI-powered credit scoring. Join the waitlist for early access to the future of DeFi lending.
-            </motion.p>
-            
-            {/* Enhanced waitlist form with micro-interactions */}
-            <motion.div 
-              variants={fadeInUp}
-              className="max-w-[400px] w-full"
-            >
-              <AnimatePresence>
-                <motion.form 
-                  key="form"
-                  onSubmit={handleSubmit}
-                  className="w-full max-w-xl space-y-3"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4, ease: PREMIUM_EASING }}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.6 }}
+                className="block mt-1"
+              >
+                <span
+                  className="relative inline-block"
+                  style={{
+                    background: 'var(--gradient-secondary)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundSize: '200% 200%',
+                    animation: 'gradientMove 8s ease infinite',
+                    filter: 'brightness(1.2) contrast(1.1)',
+                    textShadow: '0 1px 3px rgba(var(--accent-rgb), 0.4)'
+                  }}
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                  Credit
+                </span>
+                <span> with AI</span>
+              </motion.div>
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.4 }}
+              className="text-xl text-foreground/80 mb-8 max-w-2xl font-medium"
+              style={{ lineHeight: 1.6 }}
+            >
+              <span className="text-foreground/90 font-medium">ArthaNet</span> is the first AI-powered credit scoring platform for your crypto assets. Join our waitlist for early access to the future of decentralized finance.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.8 }}
+              className="max-w-md w-full relative"
+            >
+              {/* Success animation overlay */}
+              <AnimatePresence>
+                {showSuccessAnimation && (
+                  <motion.div 
+                    className="absolute inset-0 bg-primary/15 backdrop-blur-sm z-10 rounded-xl flex items-center justify-center overflow-hidden"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div 
+                      className="text-primary font-semibold flex flex-col items-center"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <motion.div 
+                        className="w-16 h-16 rounded-full bg-primary/25 flex items-center justify-center mb-3"
+                        initial={{ scale: 0.5 }}
+                        animate={{ scale: [0.5, 1.1, 1] }}
+                        transition={{ duration: 0.4, times: [0, 0.7, 1] }}
+                      >
+                        <Check className="h-8 w-8" />
+                      </motion.div>
+                      <motion.p
+                        className="text-sm font-semibold text-primary/90"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        Thank you for joining!
+                      </motion.p>
+                    </motion.div>
+                    <motion.div 
+                      className="absolute inset-0 rounded-xl"
+                      initial={{ opacity: 0.3 }}
+                      animate={{
+                        background: [
+                          "radial-gradient(circle at 30% 30%, rgba(var(--primary-rgb), 0.15), transparent 70%)",
+                          "radial-gradient(circle at 70% 70%, rgba(var(--primary-rgb), 0.15), transparent 70%)",
+                          "radial-gradient(circle at 30% 70%, rgba(var(--primary-rgb), 0.15), transparent 70%)",
+                          "radial-gradient(circle at 70% 30%, rgba(var(--primary-rgb), 0.15), transparent 70%)",
+                          "radial-gradient(circle at 30% 30%, rgba(var(--primary-rgb), 0.15), transparent 70%)"
+                        ]
+                      }}
+                      transition={{ duration: 4, ease: "linear", times: [0, 0.25, 0.5, 0.75, 1] }}
+                      style={{ zIndex: -1 }}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <form 
+                onSubmit={handleSubmit}
+                className="w-full space-y-3"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
                     <div className="relative sm:col-span-2">
                       <input
                         id="email-input"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
-                        className={cn(
-                          "w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground",
-                          "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
-                          "transition-all duration-200"
-                        )}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-200"
                         placeholder="Enter your email"
                         required
                         disabled={isSubmitting}
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-full text-muted-foreground">
-                        <ArrowRight className="w-4 h-4" />
-                      </div>
                     </div>
-                    
-                    <AnimatedButton
+
+                    <motion.button
                       type="submit"
                       disabled={isSubmitting}
-                      className={cn(
-                        'w-full h-full font-medium rounded-lg',
-                        'px-6 py-3.5', // Increased padding
-                        'bg-gradient-to-r from-primary to-accent text-primary-foreground',
-                        'hover:shadow-lg hover:shadow-primary/20',
-                        'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background',
-                        'disabled:opacity-50 disabled:cursor-not-allowed',
-                        'relative',
-                      )}
+                      className="w-full h-full font-medium rounded-lg px-6 py-3.5 bg-gradient-to-r from-primary to-accent text-primary-foreground backdrop-filter backdrop-blur-sm hover:shadow-lg hover:shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                        {isSubmitting ? (
-                          <>
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Joining...
-                          </>
-                        ) : (
-                          <>
-                            Join Waitlist
-                            <ArrowRight className="w-4 h-4 inline-block ml-2" />
-                          </>
-                        )}
-                      </AnimatedButton>
-                    </div>
-                    
-
-                </motion.form>
-              </AnimatePresence>
-              
-
+                      {isSubmitting ? (
+                        <motion.div
+                          className="flex items-center justify-center"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div className="w-5 h-5 border-2 border-white border-opacity-50 border-t-transparent rounded-full animate-spin"></div>
+                          <span className="ml-2">Submitting...</span>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          className="flex items-center justify-center"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <span>Join Waitlist</span>
+                        </motion.div>
+                      )}
+                    </motion.button>
+                  </div>
+                </form>
             </motion.div>
           </motion.div>
 
-          {/* Enhanced Hero Illustration with 3D effects and premium animations - fixed width */}
           <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.4, duration: 0.8, ease: PREMIUM_EASING }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.4 }}
             className="relative w-full lg:w-[50%] mx-auto lg:mt-0 flex-shrink-0"
             whileHover={{ scale: 1.02 }}
           >
             <div className="relative aspect-square w-full max-w-md mx-auto lg:mx-0 lg:ml-auto">
-              {/* Premium card with animated gradient border */}
-              <div 
+              <div
                 className="absolute inset-0 rounded-3xl overflow-hidden p-0.5"
                 style={{
-                  background: `linear-gradient(140deg, 
-                    rgba(var(--primary-rgb), 0.5), 
-                    rgba(var(--accent-rgb), 0.5), 
-                    rgba(var(--secondary-rgb), 0.5), 
-                    rgba(var(--primary-rgb), 0.5))`,
+                  background: `linear-gradient(140deg, rgba(var(--primary-rgb), 0.5), rgba(var(--accent-rgb), 0.5), rgba(var(--secondary-rgb), 0.5), rgba(var(--primary-rgb), 0.5))`,
                   backgroundSize: '400% 400%',
                   animation: shouldReduceMotion ? 'none' : 'gradientMove 8s ease infinite',
                   boxShadow: 'var(--shadow-glow)',
                 }}
               >
                 <div className="relative h-full w-full rounded-[calc(1.5rem-2px)] bg-background/80 backdrop-blur-xl overflow-hidden flex items-center justify-center">
-                  {/* Enhanced 3D Credit Score Visualization */}
                   <div className="relative w-full h-full flex items-center justify-center p-8">
-                    {/* Credit score visualization with premium effects */}
                     <div className="relative w-full h-full max-w-xs">
-                      {/* Track for score ring - dim background */}
                       <div className="absolute inset-0">
                         <svg viewBox="0 0 200 200" className="w-full h-full">
                           <circle
@@ -474,8 +637,7 @@ export default function Hero() {
                           />
                         </svg>
                       </div>
-                      
-                      {/* Animated score ring with gradient and glow */}
+
                       <div className="absolute inset-0">
                         <svg viewBox="0 0 200 200" className="w-full h-full filter drop-shadow-lg">
                           <defs>
@@ -498,26 +660,25 @@ export default function Hero() {
                             strokeWidth="12"
                             strokeLinecap="round"
                             strokeDasharray="502.65"
-                            strokeDashoffset="125.66" // 75% of 502.65 (for 750 score)
+                            strokeDashoffset="125.66"
                             initial={{ rotate: -90, opacity: 0 }}
-                            animate={{ 
+                            animate={{
                               rotate: -90,
                               opacity: 1,
-                              strokeDashoffset: shouldReduceMotion ? "125.66" : ["502.65", "125.66"]
+                              strokeDashoffset: shouldReduceMotion ? "125.66" : ["502.65", "125.66"],
                             }}
-                            transition={{ duration: 1.8, ease: PREMIUM_EASING }}
+                            transition={{ duration: 1.8, ease: 'easeInOut' }}
                             filter="url(#glow)"
                           />
                         </svg>
                       </div>
-                      
-                      {/* Score display with counting animation */}
+
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-                        <motion.span 
+                        <motion.span
                           className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary"
                           initial={{ opacity: 0, y: 10, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          transition={{ delay: 0.6, duration: 0.6, ease: PREMIUM_EASING }}
+                          transition={{ delay: 0.6, duration: 0.6, ease: 'easeInOut' }}
                         >
                           <motion.span
                             initial={{ opacity: 0 }}
@@ -529,7 +690,7 @@ export default function Hero() {
                             )}
                           </motion.span>
                         </motion.span>
-                        <motion.div 
+                        <motion.div
                           className="flex items-center gap-2 font-medium text-muted-foreground mt-2"
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -540,8 +701,6 @@ export default function Hero() {
                           <span className="text-sm">Credit Score</span>
                         </motion.div>
                       </div>
-                      
-                      {/* Premium floating elements with 3D effects */}
                       <motion.div 
                         className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-gradient-to-br from-primary/40 to-primary/5 backdrop-blur-sm"
                         style={{ boxShadow: '0 8px 32px rgba(var(--primary-rgb), 0.15)' }}
@@ -659,8 +818,8 @@ export default function Hero() {
         transition={{ delay: 1.5, duration: 0.8, ease: PREMIUM_EASING }}
       >
         <motion.span 
-          className="mb-2 tracking-wide font-medium"
-          animate={{ opacity: [0.7, 1, 0.7] }}
+          className="mb-2 tracking-wide font-medium text-foreground/90"
+          animate={{ opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
         >
           Scroll to explore
@@ -671,7 +830,7 @@ export default function Hero() {
           whileHover={{ borderColor: 'rgba(var(--primary-rgb), 0.5)' }}
         >
           <motion.div 
-            className="w-1.5 h-2 bg-primary rounded-full"
+            className="w-1.5 h-2 bg-primary/90 rounded-full shadow-sm shadow-primary/30"
             initial={{ y: 0 }}
             animate={{
               y: [0, 16, 0],
@@ -684,8 +843,8 @@ export default function Hero() {
             }}
           />
           <motion.div 
-            className="absolute inset-0 opacity-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent"
-            animate={{ opacity: [0, 0.5, 0] }}
+            className="absolute inset-0 opacity-0 bg-gradient-to-b from-transparent via-primary/15 to-transparent"
+            animate={{ opacity: [0, 0.7, 0] }}
             transition={{
               duration: 2,
               repeat: Infinity,
