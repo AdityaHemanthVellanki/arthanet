@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useReducedMotion, MotionValue } from 'framer-motion';
 import { Check, ArrowRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PREMIUM_EASING, fadeInUp, letterFadeIn, staggeredFadeIn, buttonHover } from '@/lib/animations';
@@ -119,12 +119,67 @@ const AnimatedButton = ({
   );
 };
 
+// Toast notification component
+const Toast = ({ message, onClose }: { message: string; onClose: () => void }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 100 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      className="fixed top-6 right-6 z-50 p-4 pr-10 rounded-lg bg-background border border-border shadow-lg flex items-center"
+    >
+      <div className="flex items-center">
+        <div className="flex-shrink-0 h-5 w-5 text-green-500">
+          <Check className="h-5 w-5" />
+        </div>
+        <div className="ml-3">
+          <p className="text-sm font-medium text-foreground">{message}</p>
+        </div>
+      </div>
+      <button
+        onClick={onClose}
+        className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground focus:outline-none"
+      >
+        <span className="sr-only">Close</span>
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </motion.div>
+  );
+};
+
+// Generate a consistent random number based on index for server and client
+const getStableRandom = (index: number, max: number = 1, min: number = 0) => {
+  // Use a simple hash function to generate a pseudo-random number based on the index
+  let hash = 0;
+  const str = `node-${index}`;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return (Math.abs(hash) % 1000) / 1000 * (max - min) + min;
+};
+
 export default function Hero() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const [toastMessage, setToastMessage] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Use stable random values for SSR
+  const getRandomValue = useCallback((index: number, max: number = 1, min: number = 0) => {
+    return isClient ? Math.random() * (max - min) + min : getStableRandom(index, max, min);
+  }, [isClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,12 +196,32 @@ export default function Hero() {
       });
       
       if (response.ok) {
-        setIsSuccess(true);
         setEmail('');
-        setTimeout(() => setIsSuccess(false), 5000);
+        setToastMessage('Successfully joined the waitlist!');
+        setShowToast(true);
+        
+        // Hide toast after 5 seconds
+        setTimeout(() => {
+          setShowToast(false);
+        }, 5000);
+      } else {
+        setToastMessage('Something went wrong. Please try again.');
+        setShowToast(true);
+        
+        // Hide toast after 5 seconds
+        setTimeout(() => {
+          setShowToast(false);
+        }, 5000);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setToastMessage('An error occurred. Please try again.');
+      setShowToast(true);
+      
+      // Hide toast after 5 seconds
+      setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -185,6 +260,15 @@ export default function Hero() {
   
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-24 md:pt-28 pb-32 overflow-hidden" id="hero">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <Toast 
+            message={toastMessage}
+            onClose={() => setShowToast(false)}
+          />
+        )}
+      </AnimatePresence>
       {/* Enhanced animated background with breathing effect */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {/* Node network background with breathing effect */}
@@ -242,36 +326,17 @@ export default function Hero() {
       {/* Main content container with strict dimensions */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Two-column layout with fixed widths and spacing */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center max-w-6xl mx-auto py-8 lg:py-12">
+        <div className="flex flex-col lg:flex-row justify-between items-center max-w-7xl mx-auto py-8 lg:py-16 gap-12 lg:gap-8">
           {/* Hero text content with staggered animations - fixed width to prevent overlap */}
           <motion.div
             variants={staggeredFadeIn}
             initial="hidden"
             animate="visible"
-            className="relative z-10 w-full lg:w-2/5 mx-auto lg:mx-0 flex-shrink-0 lg:pr-4"
+            className="relative z-10 w-full lg:w-[45%] mx-auto lg:mx-0 flex-shrink-0"
           >
-            <motion.div
-              variants={fadeInUp}
-              className="inline-block px-4 py-2 mb-6 rounded-full border border-border/50 bg-background/50 backdrop-blur-md text-sm font-medium text-muted-foreground"
-              style={{
-                boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.05)',
-                transition: 'all var(--transition-fast)'
-              }}
-              whileHover={{
-                boxShadow: '0 0 25px rgba(var(--primary-rgb), 0.15)',
-                borderColor: 'rgba(var(--primary-rgb), 0.3)',
-                transition: { duration: 0.2, ease: PREMIUM_EASING }
-              }}
-            >
-              <span className="relative flex h-2 w-2 mr-2 float-left mt-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              <span>Now in Private Beta</span>
-            </motion.div>
-            
+
             {/* Letter-by-letter animated headline with Credit Score on same line */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-bold leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-heading font-bold leading-tight mb-6">
               <div>
                 <AnimatedText text="Your " />
               </div>
@@ -295,49 +360,18 @@ export default function Hero() {
               variants={fadeInUp}
               className="max-w-[400px] w-full"
             >
-              <AnimatePresence mode="wait">
-                {isSuccess ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.4, ease: PREMIUM_EASING }}
-                    className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20 text-primary"
-                    style={{ boxShadow: 'var(--shadow-glow)' }}
-                  >
-                    <Check className="w-5 h-5 flex-shrink-0" />
-                    <span>You're on the list! We'll be in touch soon.</span>
-                  </motion.div>
-                ) : (
-                  <motion.form 
-                    key="form"
-                    onSubmit={handleSubmit}
-                    className="flex flex-col sm:flex-row gap-3 w-full max-w-[400px]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.4, ease: PREMIUM_EASING }}
-                  >
-                    <div className="relative flex-1">
-                      {/* Animated label that slides up when input is focused */}
-                      <motion.label
-                        htmlFor="email-input"
-                        className={cn(
-                          "absolute pointer-events-none text-muted-foreground/60 transition-all duration-200",
-                          isInputFocused || email ? 
-                            "text-xs top-1.5 left-3 text-primary" : 
-                            "text-base top-1/2 -translate-y-1/2 left-5"
-                        )}
-                        animate={{ 
-                          y: isInputFocused || email ? 0 : 0,
-                          opacity: 1
-                        }}
-                        transition={{ duration: 0.2, ease: PREMIUM_EASING }}
-                      >
-                        Enter your email
-                      </motion.label>
-                      
+              <AnimatePresence>
+                <motion.form 
+                  key="form"
+                  onSubmit={handleSubmit}
+                  className="w-full max-w-xl space-y-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: PREMIUM_EASING }}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                    <div className="relative sm:col-span-2">
                       <input
                         id="email-input"
                         type="email"
@@ -346,37 +380,25 @@ export default function Hero() {
                         onFocus={() => setIsInputFocused(true)}
                         onBlur={() => setIsInputFocused(false)}
                         className={cn(
-                          "w-full px-5 pt-6 pb-3 rounded-lg border text-foreground transition-all duration-200",
-                          "bg-background/50 backdrop-blur-md",
-                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
-                          "placeholder:text-transparent",
-                          isInputFocused ? 
-                            "border-primary/50 shadow-[0_0_15px_rgba(var(--primary-rgb),0.15)]" : 
-                            "border-border"
+                          "w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground",
+                          "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
+                          "transition-all duration-200"
                         )}
                         placeholder="Enter your email"
                         required
                         disabled={isSubmitting}
                       />
-                      
-                      <motion.div 
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground"
-                        animate={{ 
-                          opacity: isInputFocused || email ? 1 : 0.5,
-                          x: isInputFocused || email ? 0 : 5
-                        }}
-                        transition={{ duration: 0.2, ease: PREMIUM_EASING }}
-                      >
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-full text-muted-foreground">
                         <ArrowRight className="w-4 h-4" />
-                      </motion.div>
+                      </div>
                     </div>
                     
-                    {/* Fancy animated button */}
                     <AnimatedButton
                       type="submit"
                       disabled={isSubmitting}
                       className={cn(
-                        'px-6 py-3.5 font-medium rounded-lg',
+                        'w-full h-full font-medium rounded-lg',
+                        'px-6 py-3.5', // Increased padding
                         'bg-gradient-to-r from-primary to-accent text-primary-foreground',
                         'hover:shadow-lg hover:shadow-primary/20',
                         'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background',
@@ -384,33 +406,28 @@ export default function Hero() {
                         'relative',
                       )}
                     >
-                      {isSubmitting ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Joining...
-                        </>
-                      ) : (
-                        <>
-                          Join Waitlist
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </AnimatedButton>
-                  </motion.form>
-                )}
+                        {isSubmitting ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Joining...
+                          </>
+                        ) : (
+                          <>
+                            Join Waitlist
+                            <ArrowRight className="w-4 h-4 inline-block ml-2" />
+                          </>
+                        )}
+                      </AnimatedButton>
+                    </div>
+                    
+
+                </motion.form>
               </AnimatePresence>
               
-              <motion.p 
-                variants={fadeInUp}
-                className="mt-3 text-sm text-muted-foreground"
-                animate={{ opacity: [0.8, 1, 0.8] }}
-                transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
-              >
-                Join {Math.floor(Math.random() * 1000) + 500}+ early adopters on the waitlist
-              </motion.p>
+
             </motion.div>
           </motion.div>
 
@@ -420,11 +437,10 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.4, duration: 0.8, ease: PREMIUM_EASING }}
-            className="relative w-full lg:w-1/2 mx-auto mt-16 lg:mt-0 flex-shrink-0 lg:pl-8"
+            className="relative w-full lg:w-[50%] mx-auto lg:mt-0 flex-shrink-0"
             whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.5, ease: PREMIUM_EASING }}
           >
-            <div className="relative aspect-square w-full max-w-md mx-auto">
+            <div className="relative aspect-square w-full max-w-md mx-auto lg:mx-0 lg:ml-auto">
               {/* Premium card with animated gradient border */}
               <div 
                 className="absolute inset-0 rounded-3xl overflow-hidden p-0.5"
@@ -563,33 +579,32 @@ export default function Hero() {
                     {/* Enhanced decorative elements with varying opacity */}
                     <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
                       {shouldReduceMotion ? null : [...Array(12)].map((_, i) => {
-                        const size = Math.random() * 80 + 20;
+                        const size = getRandomValue(i, 80, 20);
                         return (
                           <motion.div
                             key={i}
-                            className="absolute rounded-full"
+                            className="absolute rounded-full pointer-events-none"
                             style={{
                               width: size,
                               height: size,
-                              left: `${Math.random() * 100}%`,
-                              top: `${Math.random() * 100}%`,
-                              background: `radial-gradient(circle, 
-                                rgba(var(--${i % 3 === 0 ? 'primary' : i % 3 === 1 ? 'accent' : 'secondary'}-rgb), ${Math.random() * 0.1 + 0.05}) 0%, 
-                                transparent 70%)`,
-                              opacity: Math.random() * 0.4 + 0.2
+                              left: `${getRandomValue(i * 2, 100)}%`,
+                              top: `${getRandomValue(i * 2 + 1, 100)}%`,
+                              background: `radial-gradient(circle at center, 
+                                rgba(var(--${i % 3 === 0 ? 'primary' : i % 3 === 1 ? 'accent' : 'secondary'}-rgb), ${getRandomValue(i * 3, 0.1, 0.05)}) 0%, 
+                                rgba(var(--${i % 3 === 0 ? 'primary' : i % 3 === 1 ? 'accent' : 'secondary'}-rgb), 0) 100%`
                             }}
                             animate={{
-                              y: [0, Math.random() > 0.5 ? 15 : -15, 0],
-                              x: [0, Math.random() > 0.5 ? 15 : -15, 0],
-                              opacity: [Math.random() * 0.3 + 0.1, Math.random() * 0.5 + 0.2, Math.random() * 0.3 + 0.1],
-                              scale: [1, Math.random() * 0.2 + 0.9, 1]
+                              y: [0, getRandomValue(i * 5) > 0.5 ? 15 : -15, 0],
+                              x: [0, getRandomValue(i * 6) > 0.5 ? 15 : -15, 0],
+                              opacity: getRandomValue(i * 4, 0.4, 0.2),
+                              scale: getRandomValue(i * 10, 0.2, 0.9) + 0.9
                             }}
                             transition={{
-                              duration: Math.random() * 8 + 8,
+                              duration: getRandomValue(i * 11, 8, 8),
                               repeat: Infinity,
                               repeatType: "reverse",
                               ease: PREMIUM_EASING,
-                              delay: Math.random() * 2
+                              delay: getRandomValue(i * 12, 2)
                             }}
                           />
                         );
