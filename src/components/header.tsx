@@ -26,11 +26,10 @@ export function Header() {
           transition={{ duration: 0.5 }}
           className="flex items-center"
         >
-          <Link href="/" className="group flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent">
-              <span className="text-sm font-bold text-primary-foreground">AN</span>
+          <Link href="/" className="group flex items-center">
+            <div className="relative h-24 w-96">
+              <img src="/images/logo.png" alt="ArthaNet Logo" className="h-full w-full object-contain" />
             </div>
-            <span className="font-heading text-xl font-bold tracking-tight">ArthaNet</span>
           </Link>
         </motion.div>
 

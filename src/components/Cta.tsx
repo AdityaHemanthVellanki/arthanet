@@ -38,17 +38,7 @@ export default function Cta() {
             </Button>
           </motion.div>
 
-          <div className="mt-10 flex items-center justify-center gap-6 opacity-70">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-sm">No credit card required</span>
-            </div>
-            <div className="h-6 w-px bg-border" />
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-              <span className="text-sm">Early access benefits</span>
-            </div>
-          </div>
+
         </motion.div>
       </div>
     </section>
