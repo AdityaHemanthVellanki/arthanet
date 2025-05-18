@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
 import { motion } from 'framer-motion';
+;
 
 // Feature card animation variants
 const cardVariants = {

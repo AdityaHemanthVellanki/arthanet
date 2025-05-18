@@ -1,0 +1,39 @@
+import React from 'react';
+import { ImageResponse } from 'next/og';
+
+// Route segment config
+export const runtime = 'edge';
+
+// Image metadata
+export const size = {
+  width: 128,
+  height: 128,
+};
+
+export const contentType = 'image/png';
+
+// Image generation
+export default function Icon() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          fontSize: 64,
+          background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          borderRadius: '50%',
+        }}
+      >
+        $
+      </div>
+    ),
+    {
+      ...size,
+    }
+  );
+}

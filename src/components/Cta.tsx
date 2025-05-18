@@ -1,4 +1,7 @@
+'use client';
+
 import { motion } from 'framer-motion';
+;
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -20,7 +23,7 @@ export default function Cta() {
         >
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Join the waitlist to be the first to access ArthaNet's decentralized credit scoring platform and start building your on-chain credit history today.
+            Join the waitlist to be the first to access ArthaNet&apos;s decentralized credit scoring platform and start building your on-chain credit history today.
           </p>
           
           <motion.div
@@ -37,8 +40,6 @@ export default function Cta() {
               <Link href="#features">Learn More</Link>
             </Button>
           </motion.div>
-
-
         </motion.div>
       </div>
     </section>

@@ -1,23 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Check, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Animation constants
 const PREMIUM_EASING = [0.4, 0, 0.2, 1];
-
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-const buttonHover = {
-  scale: 1.03,
-  transition: { duration: 0.2 }
-};
 
 // Generate a stable random number for consistent rendering between server/client
 const getStableRandom = (seed: number, max: number = 1, min: number = 0): number => {
@@ -33,7 +22,12 @@ const getStableRandom = (seed: number, max: number = 1, min: number = 0): number
 };
 
 // Animation to count up from a starting to ending value
-const CountUpAnimation = ({ from, to, duration = 1.5, delay = 0 }: { from: number; to: number; duration?: number; delay?: number }) => {
+const CountUpAnimation = ({ from, to, duration = 1.5, delay = 0 }: { 
+  from: number; 
+  to: number; 
+  duration?: number; 
+  delay?: number 
+}) => {
   const [count, setCount] = useState(from);
   
   useEffect(() => {
@@ -65,93 +59,12 @@ const CountUpAnimation = ({ from, to, duration = 1.5, delay = 0 }: { from: numbe
   return <>{count}</>;
 };
 
-// Split text into individual characters for animation
-const AnimatedText = ({ text, className }: { text: string; className?: string }) => {
-  const shouldReduceMotion = useReducedMotion();
-  
-  // Local animation variants
-  const staggeredFadeIn = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const letterFadeIn = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
-  };
-  
-  return (
-    <motion.span
-      className={className}
-      variants={staggeredFadeIn}
-      initial="hidden"
-      animate="visible"
-    >
-      {shouldReduceMotion ? (
-        text
-      ) : (
-        text.split('').map((char, index) => (
-          <motion.span
-            key={`${char}-${index}`}
-            variants={letterFadeIn}
-          >
-            {char === ' ' ? '\u00A0' : char}
-          </motion.span>
-        ))
-      )}
-    </motion.span>
-  );
-};
-
-// Custom AnimatedButton component with premium hover effect
-const AnimatedButton = ({ 
-  children, 
-  className = "", 
-  type = "button" as "button" | "submit" | "reset", 
-  disabled = false,
-  onClick
-}: {
-  children: React.ReactNode;
-  className?: string;
-  type?: "button" | "submit" | "reset";
-  disabled?: boolean;
-  onClick?: () => void;
+// Toast notification component
+const Toast = ({ message, onClose, type = "success" }: { 
+  message: string; 
+  onClose: () => void; 
+  type?: "success" | "error" 
 }) => {
-  return (
-    <motion.button
-      type={type}
-      disabled={disabled}
-      className={className}
-      whileHover={buttonHover}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-    >
-      {children}
-    </motion.button>
-  );
-};
-
-// Apple-inspired blurred glass card component
-const GlassCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  return (
-    <div className={cn(
-      "rounded-2xl backdrop-blur-md bg-background/30 border border-border/30", 
-      "shadow-xl hover:shadow-2xl transition-all duration-500",
-      "border-opacity-30 overflow-hidden",
-      className
-    )}>
-      {children}
-    </div>
-  );
-};
-
-// Enhanced toast notification component with Apple/Raycast style
-const Toast = ({ message, onClose, type = "success" }: { message: string; onClose: () => void; type?: "success" | "error" }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -201,39 +114,6 @@ const Toast = ({ message, onClose, type = "success" }: { message: string; onClos
   );
 };
 
-
-
-// Floating element for background decoration
-const FloatingElement = ({ index, className = "" }: { index: number, className?: string }) => {
-  const shouldReduceMotion = useReducedMotion();
-  const size = 20 + index * 15;
-  
-  return shouldReduceMotion ? null : (
-    <motion.div
-      className={cn("absolute rounded-full bg-opacity-10", className)}
-      style={{
-        width: size,
-        height: size,
-        left: `${getStableRandom(index * 3, 80, 10)}%`,
-        top: `${getStableRandom(index * 5, 80, 10)}%`,
-        background: `radial-gradient(circle at center, rgba(var(--${index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'accent' : 'secondary'}-rgb), 0.15) 0%, transparent 70%)`,
-        boxShadow: `0 0 ${size/2}px rgba(var(--${index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'accent' : 'secondary'}-rgb), 0.1)`,
-      }}
-      animate={{
-        y: [0, getStableRandom(index * 2, 15, -15)],
-        x: [0, getStableRandom(index * 4, 15, -15)],
-        scale: [1, getStableRandom(index * 6, 1.1, 0.9)],
-      }}
-      transition={{
-        duration: getStableRandom(index * 7, 25, 15),
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: PREMIUM_EASING,
-      }}
-    />
-  );
-};
-
 // Helper for random gradients (stable across client/server)
 const getRandomValue = (seed: number, max: number = 1, min: number = 0): number => {
   return getStableRandom(seed, max, min);
@@ -244,39 +124,14 @@ export default function Hero() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
-  const [isClient, setIsClient] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   
   // Handle reduced motion preferences
   const shouldReduceMotion = useReducedMotion();
   
-  // Set up client-side detection
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  
-  // Set up scroll event listener for parallax effects
-  useEffect(() => {
-    // Parallax effect on scroll
-    const handleScroll = () => {
-      if (window && window.scrollY < window.innerHeight) {
-        setScrollY(window.scrollY);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Create stable random value generator for consistent SSR
-  const getRandomValue = (index: number, max: number = 1, min: number = 0): number => {
-    return isClient ? Math.random() * (max - min) + min : getStableRandom(index, max, min);
-  };
-  
+  // Client-side specific code can be added here if needed
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

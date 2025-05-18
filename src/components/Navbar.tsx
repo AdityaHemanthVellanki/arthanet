@@ -1,9 +1,11 @@
-"use client";
+'use client';
+
+import { motion } from 'framer-motion';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);

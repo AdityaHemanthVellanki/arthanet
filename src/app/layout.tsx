@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter, Space_Grotesk } from 'next/font/google'
 import "./globals.css"
-import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { cn } from "@/lib/utils";
 import { Providers } from '@/components/providers';
@@ -32,6 +31,9 @@ export const metadata: Metadata = {
   title: "ArthaNet | AI-Powered Decentralized Credit Scoring",
   description: "ArthaNet is building the future of trust in Web3 — credit scoring, simplified and decentralized.",
   keywords: "ArthaNet, decentralized credit scoring, DeFi, Ethereum, Web3, on-chain credit score, AI powered finance",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -50,14 +52,17 @@ export default function RootLayout({
       )}
     >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </head>
-      <body className={cn(
-        'min-h-screen bg-background text-foreground antialiased',
-        'transition-colors duration-200' // Smooth theme transitions
-      )}>
+      <body 
+        suppressHydrationWarning={true}
+        className={cn(
+          'min-h-screen bg-background text-foreground antialiased',
+          inter.variable,
+          spaceGrotesk.variable
+        )}
+        suppressContentEditableWarning
+      >
         <Providers>
           <div className="relative flex min-h-screen flex-col">
             <Header />

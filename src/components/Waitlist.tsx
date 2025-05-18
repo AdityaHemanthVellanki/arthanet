@@ -1,7 +1,9 @@
-"use client";
+'use client';
+
+import { motion } from 'framer-motion';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+;
 
 export default function Waitlist() {
   const [email, setEmail] = useState('');
@@ -101,7 +103,7 @@ export default function Waitlist() {
                     </div>
                     <h3 className="text-xl font-bold mb-2">Thank you for joining!</h3>
                     <p className="text-foreground/90">
-                      We've added you to our waitlist. We'll notify you when ArthaNet launches.
+                      We&apos;ve added you to our waitlist. We&apos;ll notify you when ArthaNet launches.
                     </p>
                     <button 
                       onClick={() => setSubmitted(false)}

@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -28,7 +28,14 @@ export function Header() {
         >
           <Link href="/" className="group flex items-center">
             <div className="relative h-24 w-96">
-              <img src="/images/logo.png" alt="ArthaNet Logo" className="h-full w-full object-contain" />
+              <Image 
+                src="/images/logo.png" 
+                alt="ArthaNet Logo" 
+                width={32}
+                height={32}
+                className="h-full w-full object-contain"
+                priority
+              />
             </div>
           </Link>
         </motion.div>

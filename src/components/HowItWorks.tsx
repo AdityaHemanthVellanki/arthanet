@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
 import { motion } from 'framer-motion';
+;
 
 // Step data
 const steps = [
