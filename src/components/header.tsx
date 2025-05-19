@@ -27,14 +27,15 @@ export function Header() {
           className="flex items-center"
         >
           <Link href="/" className="group flex items-center">
-            <div className="relative h-24 w-96">
+            <div className="relative h-14 w-auto">
               <Image 
                 src="/images/logo.png" 
                 alt="ArthaNet Logo" 
-                width={32}
-                height={32}
-                className="h-full w-full object-contain"
+                width={200}
+                height={56}
+                className="h-auto w-auto"
                 priority
+                style={{ maxHeight: '56px' }}
               />
             </div>
           </Link>
