@@ -34,7 +34,12 @@ export default function Cta() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Button asChild size="lg" className="px-8 py-6 text-lg">
-              <Link href="/waitlist">Join Waitlist</Link>
+              <Link href="#hero" onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
+              }}>
+                Join Waitlist
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
               <Link href="#features">Learn More</Link>
