@@ -95,25 +95,89 @@ export default function AppIntegrations() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="grid grid-cols-5 gap-4">
-              {blockchainIcons.map((app, index) => (
-                <motion.div
-                  key={app.name}
-                  className={`aspect-square rounded-xl ${app.color} bg-opacity-10 flex items-center justify-center relative overflow-hidden group cursor-pointer border border-border/30`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className={`w-10 h-10 rounded-lg ${app.color} flex items-center justify-center text-white font-medium`}>
-                    {app.icon.charAt(0).toUpperCase()}
+            {/* Credit Score Visualization */}
+            <div className="bg-background/30 backdrop-blur-sm border border-border/40 rounded-xl p-6 shadow-lg">
+              {/* Header with Wallet Address and Score */}
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center space-x-2">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                    </svg>
                   </div>
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <p className="text-white text-xs font-medium">{app.name}</p>
+                  <div>
+                    <p className="text-xs text-foreground/60">Wallet</p>
+                    <p className="text-sm font-medium">0x71c...93e2</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-foreground/60">Credit Score</p>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">785</p>
+                </div>
+              </div>
+              
+              {/* Credit Score Gauge */}
+              <motion.div className="mb-6">
+                <div className="h-3 w-full bg-foreground/10 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-purple-600" 
+                    style={{ width: '78.5%' }}
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '78.5%' }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  />
+                </div>
+                <div className="flex justify-between mt-1 text-xs text-foreground/60">
+                  <span>Poor</span>
+                  <span>Fair</span>
+                  <span>Good</span>
+                  <span>Excellent</span>
+                </div>
+              </motion.div>
+              
+              {/* Credit Factors */}
+              <div className="space-y-4">
+                <motion.div 
+                  className="p-3 rounded-lg border border-border/30 bg-background/50"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.3 }}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="h-6 w-6 rounded-full bg-blue-500/10 flex items-center justify-center mr-2">
+                        <svg className="h-3 w-3 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-medium">DeFi Activity Score</span>
+                    </div>
+                    <span className="text-sm font-medium">92/100</span>
                   </div>
                 </motion.div>
-              ))}
+                
+                <motion.div 
+                  className="p-3 rounded-lg border border-border/30 bg-background/50"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.5 }}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="h-6 w-6 rounded-full bg-purple-500/10 flex items-center justify-center mr-2">
+                        <svg className="h-3 w-3 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-medium">Wallet Age</span>
+                    </div>
+                    <span className="text-sm font-medium">3.2 years</span>
+                  </div>
+                </motion.div>
+              </div>
             </div>
             
             {/* Decorative elements */}
