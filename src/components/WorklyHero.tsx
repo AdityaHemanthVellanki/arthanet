@@ -173,7 +173,7 @@ export default function WorklyHero() {
                 </form>
               </motion.div>
               
-              {/* Trust indicators */}
+              {/* Key features */}
               <motion.div
                 className="flex flex-wrap justify-center lg:justify-start items-center gap-6 text-foreground/50 text-sm"
                 initial={{ opacity: 0 }}
@@ -184,19 +184,19 @@ export default function WorklyHero() {
                   <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>Free 14-day trial</span>
+                  <span>Ethereum & Layer 2 Support</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>No credit card required</span>
+                  <span>On-chain Verification</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>Cancel anytime</span>
+                  <span>DeFi Protocol Integration</span>
                 </div>
               </motion.div>
             </div>
@@ -208,65 +208,181 @@ export default function WorklyHero() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              {/* Dashboard Preview */}
-              <div className="relative rounded-2xl shadow-2xl shadow-blue-600/10 border border-border overflow-hidden">
-                <Image 
-                  src="/dashboard-preview.png" 
-                  alt="ArthaNet Dashboard" 
-                  width={650}
-                  height={400}
-                  className="w-full h-auto object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://placehold.co/650x400/111827/6366f1?text=ArthaNet+Dashboard';
-                  }}
-                />
-                
-                {/* Dashboard Overlay Elements */}
-                <div className="absolute top-3 left-3 right-3 flex items-center">
-                  <div className="flex space-x-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                  </div>
-                  <div className="mx-auto bg-foreground/10 rounded-md px-3 py-1 text-[10px] text-foreground/70">
-                    ArthaNet Workspace
+              {/* Credit Score Dashboard */}
+              <div className="relative rounded-2xl shadow-2xl shadow-blue-600/10 border border-border overflow-hidden bg-background/90 backdrop-blur-sm p-4 pt-2">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-4 border-b border-border/20 pb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-1.5 mr-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                      <span className="text-lg">$</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ArthaNet Score</h3>
+                      <p className="text-xs text-foreground/60">Blockchain Credit Profile</p>
+                    </div>
                   </div>
                 </div>
                 
-                {/* Floating Notification */}
-                <motion.div
-                  className="absolute top-12 right-6 bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-lg w-48"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.2, duration: 0.5 }}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <p className="text-xs font-medium">New notification</p>
-                  </div>
-                  <p className="text-xs text-foreground/70">Your task "Update dashboard" has been completed!</p>
-                </motion.div>
-                
-                {/* Floating Analytics Card */}
-                <motion.div
-                  className="absolute bottom-6 left-6 bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-lg"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.4, duration: 0.5 }}
-                >
-                  <p className="text-xs font-medium mb-1">Productivity Score</p>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-24 bg-foreground/10 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
-                        initial={{ width: "0%" }}
-                        animate={{ width: "85%" }}
-                        transition={{ delay: 1.6, duration: 1 }}
-                      ></motion.div>
+                {/* Main Credit Score Display */}
+                <div className="flex flex-col md:flex-row gap-8 mb-6">
+                  {/* Credit Score Circle */}
+                  <motion.div 
+                    className="flex-shrink-0"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                  >
+                    <div className="relative w-44 h-44 mx-auto">
+                      <svg className="w-full h-full" viewBox="0 0 120 120">
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="54"
+                          fill="none"
+                          stroke="rgba(var(--foreground-rgb), 0.1)"
+                          strokeWidth="12"
+                        />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="54"
+                          fill="none"
+                          stroke="url(#creditScoreGradient)"
+                          strokeWidth="12"
+                          strokeDasharray="339.3">
+                          <motion.animate 
+                            attributeName="stroke-dashoffset" 
+                            from="339.3" 
+                            to="85" 
+                            dur="2s" 
+                            fill="freeze" 
+                          />
+                        </circle>
+                        <defs>
+                          <linearGradient id="creditScoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#2563eb" />
+                            <stop offset="100%" stopColor="#9333ea" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <motion.span 
+                          className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 1, duration: 0.8 }}
+                        >
+                          785
+                        </motion.span>
+                        <span className="text-xs text-foreground/60">EXCELLENT</span>
+                      </div>
                     </div>
-                    <span className="text-xs text-blue-500 font-medium">85%</span>
+                  </motion.div>
+                  
+                  {/* Score Details */}
+                  <div className="flex-1 space-y-4">
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.6, duration: 0.6 }}
+                    >
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium">DeFi Activity</span>
+                        <span className="text-sm font-medium text-blue-500">92%</span>
+                      </div>
+                      <div className="h-2 bg-foreground/10 rounded-full">
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: '92%' }}
+                          transition={{ delay: 1.2, duration: 1 }}
+                        />
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8, duration: 0.6 }}
+                    >
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium">Transaction History</span>
+                        <span className="text-sm font-medium text-purple-500">85%</span>
+                      </div>
+                      <div className="h-2 bg-foreground/10 rounded-full">
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: '85%' }}
+                          transition={{ delay: 1.4, duration: 1 }}
+                        />
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1, duration: 0.6 }}
+                    >
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium">Wallet Age</span>
+                        <span className="text-sm font-medium text-blue-500">67%</span>
+                      </div>
+                      <div className="h-2 bg-foreground/10 rounded-full">
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: '67%' }}
+                          transition={{ delay: 1.6, duration: 1 }}
+                        />
+                      </div>
+                    </motion.div>
                   </div>
-                </motion.div>
+                </div>
+                
+                {/* Blockchain Networks */}
+                <div className="pt-4 border-t border-border/20">
+                  <p className="text-xs text-foreground/60 mb-3">Connected Networks</p>
+                  <div className="flex space-x-3">
+                    <motion.div 
+                      className="h-8 w-8 rounded-full bg-blue-600/20 flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.2, duration: 0.4 }}
+                    >
+                      <span className="text-xs font-medium text-blue-500">ETH</span>
+                    </motion.div>
+                    <motion.div 
+                      className="h-8 w-8 rounded-full bg-purple-600/20 flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.3, duration: 0.4 }}
+                    >
+                      <span className="text-xs font-medium text-purple-500">POL</span>
+                    </motion.div>
+                    <motion.div 
+                      className="h-8 w-8 rounded-full bg-blue-400/20 flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.4, duration: 0.4 }}
+                    >
+                      <span className="text-xs font-medium text-blue-400">ARB</span>
+                    </motion.div>
+                    <motion.div 
+                      className="h-8 w-8 rounded-full bg-red-500/20 flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.5, duration: 0.4 }}
+                    >
+                      <span className="text-xs font-medium text-red-500">OP</span>
+                    </motion.div>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
