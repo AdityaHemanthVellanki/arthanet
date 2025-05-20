@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import Image from 'next/image';
 import WaitlistThankYou from './WaitlistThankYou';
 
 export default function WorklyHero() {

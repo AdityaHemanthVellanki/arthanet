@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 
 // This is a placeholder Navbar component that isn't used in the application
 // It exists only to resolve IDE errors

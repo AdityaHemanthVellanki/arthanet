@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface WaitlistThankYouProps {
@@ -59,7 +59,7 @@ export default function WaitlistThankYou({ show, onClose }: WaitlistThankYouProp
               
               <h3 className="text-2xl font-bold mb-2">Thank You!</h3>
               <p className="text-foreground/70 mb-6">
-                You've been added to our waitlist. We'll notify you when ArthaNet is ready for you to try.
+                You&apos;ve been added to our waitlist. We&apos;ll notify you when ArthaNet is ready for you to try.
               </p>
               
               <motion.button

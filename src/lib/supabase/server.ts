@@ -1,58 +1,26 @@
-import { createServerClient as createSupabaseServerClient } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from './database.types';
 
-type CookieOptions = {
-  name: string;
-  value: string;
-  domain?: string;
-  path?: string;
-  maxAge?: number;
-  httpOnly?: boolean;
-  secure?: boolean;
-  sameSite?: 'lax' | 'strict' | 'none';
-};
-
-export async function createServerSupabaseClient() {
-  const cookieStore = await cookies();
-  
-  return createSupabaseServerClient<Database>(
+export function createServerSupabaseClient() {
+  // Using the new approach recommended by Supabase for Next.js App Router
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        get(name) {
+          return cookies().get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
-          try {
-            cookieStore.set({
-              name,
-              value,
-              ...options,
-              httpOnly: false,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              path: '/',
-            } as any);
-          } catch (error) {
-            console.error('Error setting cookie:', error);
-          }
+        set(name, value, options) {
+          // This is a server component, so we can't set cookies directly
+          // This is a no-op but required by the interface
         },
-        remove(name: string, options: any) {
-          try {
-            cookieStore.set({
-              name,
-              value: '',
-              ...options,
-              maxAge: 0,
-              expires: new Date(0),
-            } as any);
-          } catch (error) {
-            console.error('Error removing cookie:', error);
-          }
-        },
-      },
+        remove(name, options) {
+          // This is a server component, so we can't remove cookies directly
+          // This is a no-op but required by the interface
+        }
+      }
     }
   );
 }

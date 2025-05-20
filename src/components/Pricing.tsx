@@ -96,7 +96,7 @@ export default function Pricing() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Find the perfect plan for your team's needs. All plans include a 14-day free trial.
+            Find the perfect plan for your team&apos;s needs. All plans include a 14-day free trial.
           </motion.p>
         </div>
         

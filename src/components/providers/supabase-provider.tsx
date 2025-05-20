@@ -2,7 +2,7 @@
 
 import { createBrowserClient } from '@supabase/ssr';
 import { Database } from '@/lib/supabase/database.types';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type SupabaseContext = {
   supabase: ReturnType<typeof createBrowserClient<Database>>;

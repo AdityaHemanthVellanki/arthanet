@@ -75,7 +75,7 @@ export default function Testimonials() {
           >
             Teams That Switched to
             <br/>
-            ArthaNet Don't Look Back
+            ArthaNet Don&apos;t Look Back
           </motion.h2>
           
           <motion.p

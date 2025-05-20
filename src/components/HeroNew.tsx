@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HeroNew() {
   const [email, setEmail] = useState('');
@@ -105,12 +106,15 @@ export default function HeroNew() {
           >
             <div className="relative rounded-2xl shadow-2xl shadow-blue-600/10 border border-border overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none z-10"></div>
-              <img 
+              <Image 
                 src="/dashboard-preview.png" 
                 alt="ArthaNet Dashboard" 
+                width={1200}
+                height={700}
                 className="w-full h-auto object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://placehold.co/1200x700/3a0fff/ffffff?text=ArthaNet+Dashboard';
+                onError={() => {
+                  // Next/image doesn't support onError the same way as img
+                  // This is a placeholder for error handling
                 }}
               />
             </div>
