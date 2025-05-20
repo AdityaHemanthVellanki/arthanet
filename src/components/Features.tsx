@@ -125,25 +125,6 @@ export default function Features() {
             </motion.div>
           ))}  
         </div>
-        
-        {/* App dashboard preview */}
-        <motion.div
-          className="mt-24 relative rounded-2xl overflow-hidden shadow-2xl border border-border/40"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 pointer-events-none opacity-70"></div>
-          <img 
-            src="/dashboard-large.png" 
-            alt="ArthaNet Dashboard" 
-            className="w-full h-auto"
-            onError={(e) => {
-              e.currentTarget.src = 'https://placehold.co/1200x600/0a0a0a/6366f1?text=ArthaNet+Dashboard';
-            }}
-          />
-        </motion.div>
       </div>
     </section>
   );

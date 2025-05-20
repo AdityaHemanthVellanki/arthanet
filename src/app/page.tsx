@@ -6,11 +6,7 @@ import dynamic from 'next/dynamic';
 const WorklyHero = dynamic(() => import('@/components/WorklyHero'), { ssr: false });
 const Features = dynamic(() => import('@/components/Features'));
 const HowItWorks = dynamic(() => import('@/components/HowItWorks'));
-const Pricing = dynamic(() => import('@/components/Pricing'));
-const Cta = dynamic(() => import('@/components/Cta'));
 const Footer = dynamic(() => import('@/components/Footer'));
-// Additional sections for a richer UI
-const Testimonials = dynamic(() => import('@/components/Testimonials'));
 const AppIntegrations = dynamic(() => import('@/components/AppIntegrations'));
 
 export default function Home() {
@@ -20,9 +16,6 @@ export default function Home() {
       <Features />
       <AppIntegrations />
       <HowItWorks />
-      <Testimonials />
-      <Pricing />
-      <Cta />
       <Footer />
     </main>
   );
