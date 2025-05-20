@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import WaitlistThankYou from './WaitlistThankYou';
 
 export default function WorklyHero() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +28,7 @@ export default function WorklyHero() {
       
       if (response.ok) {
         setEmail('');
-        alert('Successfully joined the waitlist!');
+        setShowThankYou(true);
       } else {
         alert('Error joining the waitlist. Please try again.');
       }
@@ -40,6 +42,11 @@ export default function WorklyHero() {
 
   return (
     <section className="relative overflow-hidden bg-background pt-24 pb-16 min-h-[90vh] flex flex-col justify-center">
+      {/* Thank you popup */}
+      <WaitlistThankYou 
+        show={showThankYou} 
+        onClose={() => setShowThankYou(false)} 
+      />
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden -z-10">
         {/* Large gradient orb */}
