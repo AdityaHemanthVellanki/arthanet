@@ -4,7 +4,6 @@ import "./globals.css"
 import { Header } from '@/components/header';
 import { cn } from "@/lib/utils";
 import { Providers } from '@/components/providers';
-import SupabaseProvider from '@/components/providers/supabase-provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -65,14 +64,12 @@ export default function RootLayout({
         suppressContentEditableWarning
       >
         <Providers>
-          <SupabaseProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">
                 {children}
               </main>
             </div>
-          </SupabaseProvider>
         </Providers>
       </body>
     </html>
