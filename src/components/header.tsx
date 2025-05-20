@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -27,17 +26,7 @@ export function Header() {
           className="flex items-center"
         >
           <Link href="/" className="group flex items-center">
-            <div className="relative h-14 w-auto">
-              <Image 
-                src="/images/logo.png" 
-                alt="ArthaNet Logo" 
-                width={200}
-                height={56}
-                className="h-auto w-auto"
-                priority
-                style={{ maxHeight: '56px' }}
-              />
-            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ArthaNet</span>
           </Link>
         </motion.div>
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-;
 
 // Feature card animation variants
 const cardVariants = {
@@ -20,30 +19,29 @@ const cardVariants = {
 // Features data
 const features = [
   {
-    title: "On-chain Credit Score",
-    description: "Get a comprehensive credit score based on your complete on-chain transaction history across multiple networks.",
+    title: "AI-Powered Credit Scores",
+    description: "Advanced machine learning algorithms analyze on-chain data to generate accurate credit scores for DeFi users.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
     )
   },
   {
-    title: "AI-Powered Financial Analysis",
-    description: "Our advanced AI algorithms analyze your DeFi transactions to provide personalized financial insights and recommendations.",
+    title: "Decentralized Infrastructure",
+    description: "Fully on-chain architecture ensures transparency and immutability of credit data across the Web3 ecosystem.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
       </svg>
     )
   },
   {
-    title: "DeFi Automation Tools",
-    description: "Set up intelligent automations based on your credit score to optimize your DeFi strategies and maximize yields.",
+    title: "Multi-Chain Support",
+    description: "Comprehensive credit scoring across Ethereum, Polygon, Arbitrum and other leading blockchain networks.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
       </svg>
     )
   },
@@ -60,45 +58,74 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-20 relative" id="features">
-      {/* Background accent */}
-      <div className="absolute -top-40 -left-40 w-80 h-80 bg-[var(--accent-blue)] opacity-10 rounded-full blur-3xl"></div>
-      
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="text-foreground">Built for the</span> <span className="text-gradient">DeFi Ecosystem</span>
-          </h2>
-          <p className="text-lg text-foreground/90 max-w-2xl mx-auto">
-            ArthaNet combines on-chain data and AI to create powerful financial tools.
-          </p>
-        </motion.div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <section id="features" className="py-24 bg-background">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Section header */}
+        <div className="text-center mb-20">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-foreground mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            Decentralized Credit<br/>
+            <span className="mt-2 inline-block">For a Trustless World</span>
+          </motion.h2>
+          <motion.p 
+            className="max-w-2xl mx-auto text-lg text-foreground/70 mt-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            ArthaNet provides transparent and decentralized credit scoring for DeFi users and protocols across blockchains.
+          </motion.p>
+        </div>
+
+        {/* Features grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="bg-card bg-opacity-60 p-6 rounded-xl backdrop-blur-sm border border-[var(--accent-blue)] border-opacity-20 hover:border-opacity-40 transition-all group"
-              variants={cardVariants}
+              className="relative p-8 rounded-2xl border border-border/40 hover:border-primary/30 bg-gradient-to-b from-background/80 to-background hover:shadow-xl transition-all duration-300 group overflow-hidden"
               initial="offscreen"
               whileInView="onscreen"
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              variants={cardVariants}
             >
-              <div className="bg-gradient-to-br from-accent to-primary p-3 rounded-lg w-14 h-14 flex items-center justify-center mb-4 text-white group-hover:shadow-md group-hover:shadow-[var(--neon-blue)] transition-all">
-                {feature.icon}
+              {/* Subtle hover effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <div className="relative z-10">
+                <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-600/10 text-blue-500 shadow-sm">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-blue-500 transition-colors duration-300">{feature.title}</h3>
+                <p className="text-foreground/70 group-hover:text-foreground/80 transition-colors duration-300">{feature.description}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-              <p className="text-foreground/90">{feature.description}</p>
             </motion.div>
-          ))}
+          ))}  
         </div>
+        
+        {/* App dashboard preview */}
+        <motion.div
+          className="mt-24 relative rounded-2xl overflow-hidden shadow-2xl border border-border/40"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 pointer-events-none opacity-70"></div>
+          <img 
+            src="/dashboard-large.png" 
+            alt="ArthaNet Dashboard" 
+            className="w-full h-auto"
+            onError={(e) => {
+              e.currentTarget.src = 'https://placehold.co/1200x600/0a0a0a/6366f1?text=ArthaNet+Dashboard';
+            }}
+          />
+        </motion.div>
       </div>
     </section>
   );

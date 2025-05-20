@@ -3,24 +3,27 @@
 import dynamic from 'next/dynamic';
 
 // Import components with SSR disabled where needed
-const HeroClient = dynamic(() => import('@/components/HeroClient'), { ssr: false });
+const WorklyHero = dynamic(() => import('@/components/WorklyHero'), { ssr: false });
 const Features = dynamic(() => import('@/components/Features'));
 const HowItWorks = dynamic(() => import('@/components/HowItWorks'));
-const Testimonials = dynamic(() => import('@/components/Testimonials'));
+const Pricing = dynamic(() => import('@/components/Pricing'));
 const Cta = dynamic(() => import('@/components/Cta'));
 const Footer = dynamic(() => import('@/components/Footer'));
+// Additional sections for a richer UI
+const Testimonials = dynamic(() => import('@/components/Testimonials'));
+const AppIntegrations = dynamic(() => import('@/components/AppIntegrations'));
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
-        <HeroClient />
-        <Features />
-        <HowItWorks />
-        <Testimonials />
-        <Cta />
-      </main>
+    <main className="flex min-h-screen flex-col">
+      <WorklyHero />
+      <Features />
+      <AppIntegrations />
+      <HowItWorks />
+      <Testimonials />
+      <Pricing />
+      <Cta />
       <Footer />
-    </div>
+    </main>
   );
 }
