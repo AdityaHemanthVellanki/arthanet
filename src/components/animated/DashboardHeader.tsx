@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export const DashboardHeader = () => {
   const [showNotifications, setShowNotifications] = useState(false);
-  // Mobile menu state removed
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   const notifications = [
     { id: 1, title: 'Credit score improved', message: 'Your credit score has increased by 15 points', time: '2h ago' },
@@ -103,7 +103,15 @@ export const DashboardHeader = () => {
               <ChevronDown size={14} />
             </motion.button>
             
-            {/* Mobile Menu Button removed */}
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden h-10 w-10 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+            >
+              {showMobileMenu ? <X size={18} /> : <Menu size={18} />}
+            </motion.button>
           </div>
         </div>
       </div>
@@ -113,4 +121,36 @@ export const DashboardHeader = () => {
   );
 };
 
-// NavLink component removed as it's no longer needed
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  active?: boolean;
+}
+
+const NavLink = ({ href, children, active }: NavLinkProps) => {
+  return (
+    <Link href={href} className="group relative block">
+      <div className={`py-2 relative z-10 ${active ? 'text-indigo-400' : 'text-slate-300'} font-medium transition-colors`}>
+        {children}
+      </div>
+      
+      {/* Animated underline */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-[2px] bg-indigo-500 opacity-0 group-hover:opacity-100"
+        initial={{ width: 0 }}
+        whileHover={{ width: '100%' }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {active && (
+        <motion.div
+          className="absolute bottom-0 left-0 h-[2px] bg-indigo-500"
+          layoutId="activeNavIndicator"
+          initial={{ width: 0 }}
+          animate={{ width: '100%' }}
+          transition={{ duration: 0.3 }}
+        />
+      )}
+    </Link>
+  );
+};

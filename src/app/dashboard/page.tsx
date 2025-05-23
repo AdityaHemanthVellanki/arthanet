@@ -8,89 +8,142 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Shield, Wallet, ArrowUpRight, Clock, CreditCard, 
   TrendingUp, TrendingDown, AlertCircle, ExternalLink, 
-  BarChart3, History, ChevronRight, Info, Plus
+  BarChart3, History, ChevronRight, Info, Plus,
+  RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 
 // Import our custom components
-import { CreditScoreChart } from '@/components/CreditScoreChart';
-import { CircularProgress } from '@/components/animated/CircularProgress';
-import { AnimatedCard } from '@/components/animated/AnimatedCard';
+import { CreditScoreGauge } from '@/components/CreditScoreGauge';
+import { PortfolioCards } from '@/components/PortfolioCards';
+import { TransactionActivityFeed } from '@/components/TransactionActivityFeed';
+import { ActionsPanel } from '@/components/ActionsPanel';
+import { CreditFactorAnalysis } from '@/components/CreditFactorAnalysis';
 import { GlassCard } from '@/components/animated/GlassCard';
-import { TrendIndicator } from '@/components/animated/TrendIndicator';
+import { AnimatedCard } from '@/components/animated/AnimatedCard';
 import { BackdropBlur } from '@/components/animated/BackdropBlur';
 import { DashboardHeader } from '@/components/animated/DashboardHeader';
-import { RecommendationCard } from '@/components/animated/RecommendationCard';
 
-// Import the credit score service
-import { getUserCreditScore, getCreditScoreHistory } from '@/lib/creditScoreService';
+// Import services
+import { getWalletAnalysis } from '@/lib/ethereumService';
+import { analyzeWalletForCreditScore, CreditScoreData, CreditFactor } from '@/lib/openaiService';
 
 export default function Dashboard() {
+  const { address, isConnected } = useAccount();
+  
   // State management
-  const [creditScore, setCreditScore] = useState(720);
-  const [previousScore, setPreviousScore] = useState(680);
-  const [loading, setLoading] = useState(true);
-  const [scoreHistory, setScoreHistory] = useState<{date: string; score: number}[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
-
-  // Fetch data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Fetch credit score data
-        const scoreData = await getUserCreditScore();
-        setCreditScore(scoreData.score);
-        setPreviousScore(scoreData.previousScore);
-        
-        // Fetch score history
-        const history = await getCreditScoreHistory();
-        setScoreHistory(history);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  
+  // Wallet data state
+  const [walletData, setWalletData] = useState<any>(null);
+  
+  // Credit score state
+  const [creditScoreData, setCreditScoreData] = useState<CreditScoreData | null>(null);
+  
+  // Portfolio data state
+  const [assets, setAssets] = useState<any[]>([
+    { symbol: 'ETH', name: 'Ethereum', balance: '1.25', value: 3750, change24h: 2.5 },
+    { symbol: 'USDC', name: 'USD Coin', balance: '2500.00', value: 2500, change24h: 0.1 },
+    { symbol: 'WBTC', name: 'Wrapped Bitcoin', balance: '0.05', value: 3000, change24h: -1.2 },
+    { symbol: 'AAVE', name: 'Aave', balance: '10.00', value: 800, change24h: 5.7 },
+  ]);
+  
+  const [loans, setLoans] = useState<any[]>([
+    { protocol: 'Aave', amount: '1000 USDC', value: 1000, interestRate: 2.5, collateralRatio: 180 },
+    { protocol: 'Compound', amount: '0.5 ETH', value: 1500, interestRate: 3.2, collateralRatio: 150 },
+  ]);
+  
+  const [yields, setYields] = useState<any[]>([
+    { protocol: 'Lido', asset: 'ETH', amount: '0.5', value: 1500, apy: 3.8 },
+    { protocol: 'Aave', asset: 'USDC', amount: '1000', value: 1000, apy: 2.5 },
+  ]);
+  
+  // Refresh data function
+  const refreshData = async () => {
+    if (!isConnected || !address) return;
+    
+    setRefreshing(true);
+    try {
+      // Fetch wallet data
+      const walletAnalysis = await getWalletAnalysis(address);
+      setWalletData(walletAnalysis);
+      
+      // Generate credit score using OpenAI
+      const creditScore = await analyzeWalletForCreditScore(
+        address,
+        walletAnalysis.transactions,
+        {
+          eth: walletAnalysis.ethBalance,
+          tokens: walletAnalysis.tokenBalances
+        }
+      );
+      
+      setCreditScoreData(creditScore);
+      
+      // Update assets (in a real app, this would come from the wallet analysis)
+      // This is sample data for demonstration
+      if (walletAnalysis.transactions.length > 0) {
+        // We'd extract real token balances here
       }
-    };
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+  
+  // Fetch data on component mount or when wallet connects
+  useEffect(() => {
+    if (isConnected && address) {
+      setLoading(true);
+      refreshData();
+    }
+  }, [isConnected, address]);
 
-    fetchData();
-  }, []);
-
-  // Score difference calculation
-  const scoreDifference = creditScore - previousScore;
-
-  // Mock data for transactions
-  const recentTransactions = [
-    { id: 1, type: 'Loan Repayment', amount: '+25 points', date: '2025-05-20' },
-    { id: 2, type: 'Credit Utilization', amount: '+10 points', date: '2025-05-15' },
-    { id: 3, type: 'New Credit Line', amount: '-5 points', date: '2025-05-10' },
-    { id: 4, type: 'On-time Payment', amount: '+15 points', date: '2025-05-05' },
-  ];
-
-  // Mock data for recommendations
-  const recommendations = [
-    { 
-      id: 1, 
-      title: 'Reduce Credit Utilization', 
-      description: 'Keep your credit card balances below 30% of your available credit.',
-      impact: 'High Impact',
-      icon: 'chart' as const
-    },
-    { 
-      id: 2, 
-      title: 'Maintain Payment Schedule', 
-      description: 'Continue making on-time payments to build payment history.',
-      impact: 'Medium Impact',
-      icon: 'shield' as const
-    },
-    { 
-      id: 3, 
-      title: 'Connect Additional Wallets', 
-      description: 'Link more blockchain wallets for a comprehensive view.',
-      impact: 'Low Impact',
-      icon: 'wallet' as const
-    },
-  ];
+  // Show a message if not connected
+  const renderConnectWalletMessage = () => {
+    if (!isConnected) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="h-20 w-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-6">
+            <Wallet className="h-10 w-10 text-indigo-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-200 mb-3">Connect Your Wallet</h2>
+          <p className="text-slate-400 max-w-md mb-6">
+            Connect your Ethereum wallet to view your personalized dashboard with real-time credit score, portfolio analysis, and recommendations.
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+  
+  // Refresh button component
+  const RefreshButton = () => (
+    <Button
+      variant="outline"
+      size="sm"
+      className="bg-slate-800/50 border-slate-700/50 text-slate-300 ml-auto flex items-center"
+      onClick={refreshData}
+      disabled={refreshing || !isConnected}
+    >
+      {refreshing ? (
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="mr-2 h-4 w-4 rounded-full border-2 border-slate-300 border-t-transparent"
+        />
+      ) : (
+        <RefreshCw className="mr-2 h-4 w-4" />
+      )}
+      Refresh Data
+    </Button>
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 dashboard-bg">
@@ -100,55 +153,71 @@ export default function Dashboard() {
       {/* Main Content */}
       <BackdropBlur className="py-8">
         <div className="container mx-auto px-4">
-          {/* Welcome Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 inline-block">Your Credit Dashboard</h1>
-            <p className="text-slate-400 mt-2">Track and improve your decentralized credit score</p>
-          </motion.div>
-          
-          {/* Credit Score Overview */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Credit Score Card */}
-            <GlassCard className="col-span-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xl text-slate-200">Credit Score</CardTitle>
-                <CardDescription className="text-slate-400">Your decentralized credit rating</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center justify-center py-6">
-                {loading ? (
-                  <div className="h-48 flex items-center justify-center">
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="h-10 w-10 rounded-full border-2 border-indigo-500 border-t-transparent"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <CircularProgress score={creditScore} />
-                    <div className="mt-4">
-                      <TrendIndicator value={scoreDifference} />
-                    </div>
-                  </>
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-center">
-                <Link href="/dashboard/score-details">
-                  <Button variant="outline" className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-700/50 text-slate-300">
-                    <Info className="mr-2 h-4 w-4" />
-                    Score Details
-                  </Button>
-                </Link>
-              </CardFooter>
-            </GlassCard>
+          {/* Title and Refresh Button Section */}
+          <div className="flex flex-wrap items-center justify-between mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 inline-block">Your Credit Dashboard</h1>
+              <p className="text-slate-400 mt-2">Track and improve your decentralized credit score</p>
+            </motion.div>
             
-            {/* Quick Stats Cards */}
-            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isConnected && <RefreshButton />}
+          </div>
+          
+          {/* Connect Wallet Message */}
+          {renderConnectWalletMessage()}
+          
+          {!isConnected ? null : (
+            <>
+              {/* Credit Score Overview */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                {/* Credit Score Gauge */}
+                <div className="col-span-1">
+                  <CreditScoreGauge 
+                    score={creditScoreData?.score || 720}
+                    previousScore={creditScoreData?.previousScore || 700}
+                    loading={loading}
+                    onInfoClick={() => setActiveTab('factors')}
+                  />
+                </div>
+                
+                {/* Portfolio Cards */}
+                <div className="col-span-1 lg:col-span-2">
+                  <PortfolioCards 
+                    assets={assets}
+                    loans={loans}
+                    yields={yields}
+                    loading={loading}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+            
+          {!isConnected ? null : (
+            <>
+              {/* Tabs Section */}
+              <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="mb-8">
+                <TabsList className="grid w-full grid-cols-3 h-auto bg-slate-900/50 border border-slate-800/50">
+                  <TabsTrigger value="overview" className="py-3 data-[state=active]:bg-slate-800/50">
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger value="transactions" className="py-3 data-[state=active]:bg-slate-800/50">
+                    Transactions
+                  </TabsTrigger>
+                  <TabsTrigger value="factors" className="py-3 data-[state=active]:bg-slate-800/50">
+                    Factors
+                  </TabsTrigger>
+                </TabsList>
+                
+                {/* Overview Tab */}
+                <TabsContent value="overview" className="mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    {/* Actions Panel */}
+                    <ActionsPanel />
               <AnimatedCard delay={0.1}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl text-slate-200">Connected Wallets</CardTitle>
