@@ -5,19 +5,65 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUpRight, Shield, Wallet, BarChart3, History } from 'lucide-react';
+import { ArrowUpRight, Shield, Wallet, BarChart3, History, ChevronRight, TrendingUp, TrendingDown, AlertCircle, Info } from 'lucide-react';
+import { CreditScoreChart } from '@/components/CreditScoreChart';
+import { getUserCreditScore, getCreditScoreHistory } from '@/lib/creditScoreService';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const [creditScore, setCreditScore] = useState(720);
+  const [previousScore, setPreviousScore] = useState(680);
   const [loading, setLoading] = useState(true);
+  const [scoreHistory, setScoreHistory] = useState<{date: string; score: number}[]>([]);
+  const [activeTab, setActiveTab] = useState('history');
 
   useEffect(() => {
-    // Simulate loading data
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch credit score data
+        const scoreData = await getUserCreditScore();
+        setCreditScore(scoreData.score);
+        setPreviousScore(scoreData.previousScore);
+        
+        // Fetch score history
+        const history = await getCreditScoreHistory();
+        setScoreHistory(history);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  const getScoreDifference = () => {
+    const diff = creditScore - previousScore;
+    if (diff > 0) {
+      return (
+        <div className="flex items-center text-green-500">
+          <TrendingUp className="h-4 w-4 mr-1" />
+          <span>+{diff} points</span>
+        </div>
+      );
+    } else if (diff < 0) {
+      return (
+        <div className="flex items-center text-red-500">
+          <TrendingDown className="h-4 w-4 mr-1" />
+          <span>{diff} points</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex items-center text-gray-500">
+          <ChevronRight className="h-4 w-4 mr-1" />
+          <span>No change</span>
+        </div>
+      );
+    }
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 750) return 'text-green-500';
