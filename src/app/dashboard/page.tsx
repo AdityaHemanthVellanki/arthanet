@@ -288,7 +288,7 @@ export default function Dashboard() {
                 </CardFooter>
               </AnimatedCard>
             </div>
-          </div>
+          </TabsContent>
           
           {/* Dashboard Tabs */}
           <Tabs 
