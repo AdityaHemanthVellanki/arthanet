@@ -16,6 +16,7 @@ import { useAccount } from 'wagmi';
 
 // Import our custom components
 import { CreditScoreGauge } from '@/components/CreditScoreGauge';
+import { CreditScoreChart } from '@/components/CreditScoreChart';
 import { PortfolioCards } from '@/components/PortfolioCards';
 import { TransactionActivityFeed } from '@/components/TransactionActivityFeed';
 import { ActionsPanel } from '@/components/ActionsPanel';
@@ -24,6 +25,7 @@ import { GlassCard } from '@/components/animated/GlassCard';
 import { AnimatedCard } from '@/components/animated/AnimatedCard';
 import { BackdropBlur } from '@/components/animated/BackdropBlur';
 import { DashboardHeader } from '@/components/animated/DashboardHeader';
+import { RecommendationCard } from '@/components/animated/RecommendationCard';
 
 // Import services
 import { getWalletAnalysis } from '@/lib/ethereumService';
@@ -59,6 +61,31 @@ export default function Dashboard() {
   const [yields, setYields] = useState<any[]>([
     { protocol: 'Lido', asset: 'ETH', amount: '0.5', value: 1500, apy: 3.8 },
     { protocol: 'Aave', asset: 'USDC', amount: '1000', value: 1000, apy: 2.5 },
+  ]);
+  
+  // Recommendations for credit score improvement
+  const [recommendations, setRecommendations] = useState<any[]>([
+    { id: 1, title: 'Improve Credit Utilization', description: 'Consider paying down some of your loan positions to improve your credit utilization ratio.', impact: 'High Impact', icon: 'chart' },
+    { id: 2, title: 'Diversify Assets', description: 'Adding more diverse assets to your portfolio can improve your credit mix score.', impact: 'Medium Impact', icon: 'wallet' },
+    { id: 3, title: 'Maintain Consistent Activity', description: 'Regular, responsible DeFi activity helps build a strong payment history.', impact: 'High Impact', icon: 'shield' }
+  ]);
+  
+  // Credit score history data
+  const [scoreHistory, setScoreHistory] = useState([
+    { date: '2025-01', score: 620, previousScore: 600 },
+    { date: '2025-02', score: 645, previousScore: 620 },
+    { date: '2025-03', score: 670, previousScore: 645 },
+    { date: '2025-04', score: 695, previousScore: 670 },
+    { date: '2025-05', score: 720, previousScore: 695 }
+  ]);
+  
+  // Recent transactions that affect credit score
+  const [recentTransactions, setRecentTransactions] = useState([
+    { id: 1, type: 'Loan Repayment', amount: '+15', date: 'Today' },
+    { id: 2, type: 'New DeFi Position', amount: '+8', date: 'Yesterday' },
+    { id: 3, type: 'Missed Payment', amount: '-12', date: '3 days ago' },
+    { id: 4, type: 'Credit Utilization Improved', amount: '+10', date: '1 week ago' },
+    { id: 5, type: 'New Credit Line', amount: '+5', date: '2 weeks ago' }
   ]);
   
   // Refresh data function
