@@ -1,21 +1,15 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk } from 'next/font/google'
 import "./globals.css"
 import { ConditionalHeader } from '@/components/ConditionalHeader';
 import { cn } from "@/lib/utils";
 import { Providers } from '@/components/providers';
 
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
-
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-space-grotesk',
+  variable: '--font-space',
   weight: ['400', '500', '600', '700'],
 });
 
@@ -48,9 +42,8 @@ export default function RootLayout({
       lang="en" 
       suppressHydrationWarning
       className={cn(
-        inter.variable,
         spaceGrotesk.variable,
-        'scroll-smooth' // Optional: Enable smooth scrolling
+        'scroll-smooth font-space' // Space Grotesk as default font
       )}
     >
       <head>
@@ -59,8 +52,7 @@ export default function RootLayout({
       <body 
         suppressHydrationWarning={true}
         className={cn(
-          'min-h-screen bg-background text-foreground antialiased',
-          inter.variable,
+          'min-h-screen bg-background text-foreground antialiased font-space',
           spaceGrotesk.variable
         )}
         suppressContentEditableWarning

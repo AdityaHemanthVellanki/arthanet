@@ -53,8 +53,9 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'],
-        heading: ['var(--font-space-grotesk)', 'sans-serif'],
+        sans: ['var(--font-space)', 'sans-serif'],
+        space: ['var(--font-space)', 'sans-serif'],
+        heading: ['var(--font-space)', 'sans-serif'],
       },
       keyframes: {
         'fade-in': {

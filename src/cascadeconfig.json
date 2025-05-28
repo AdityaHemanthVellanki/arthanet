@@ -1,0 +1,5 @@
+{
+    "default_model": "cascade-base",
+    "offline_mode": true,
+    "context_scope": "project"
+  }
